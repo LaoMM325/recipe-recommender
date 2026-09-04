@@ -104,15 +104,7 @@ python tools/generate_recipes.py --rounds-limit 5   # 先试水
 - 不配 Tavily：AI 补菜只做库内补充并提示如何开启；
 - 前端 + 内置 26 道菜：后端不开也能打开页面（少联网功能）。
 
-## Git 协作须知
-
-- 提交前确认 `.env`、`api.txt`、备份目录都在 `.gitignore` 里（已配好）。
-- 每位成员先设 git 身份（邮箱用 GitHub 绑定的那个），否则贡献者统计不准：
-  ```bash
-  git config user.name "你的GitHub昵称"
-  git config user.email "你的GitHub绑定邮箱"
-  ```
-- 分工建议（文件边界互不冲突）：
+## 分工建议（文件边界互不冲突）
 
 | 人 | 文件 | 事项 |
 |---|---|---|
@@ -120,12 +112,3 @@ python tools/generate_recipes.py --rounds-limit 5   # 先试水
 | 后端 | `backend/main.py`、`backend/llm.py` | 接口、检索、清洗、错误处理 |
 | Prompt | `backend/prompt.py` | 每日/节日/清洗提示词打磨 |
 | 前端 | `frontend/index.html`、`app.js`、`style.css` | UI 交互、卡片/账本展示 |
-
-## 三种运行模式
-
-- 各自开发：`uvicorn main:app --reload` → 各自访问 `http://127.0.0.1:8000/`
-- 局域网联调：`uvicorn main:app --host 0.0.0.0 --reload`，队友访问
-  `http://你的局域网IP:8000/`（防火墙放行 8000）
-- 公网演示：cpolar/ngrok 临时穿透；或云服务器长期部署
-
-代码完全一样，差别只是跑在哪台机器、别人从哪访问。
