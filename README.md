@@ -60,7 +60,7 @@ start.bat
 `pip install fastapi "uvicorn[standard]" openai python-dotenv` →
 `uvicorn main:app --reload`
 
-然后打开 **http://127.0.0.1:8000/**（完整网页）；接口文档 **http://127.0.0.1:8000/docs**。
+然后打开 **<http://127.0.0.1:8000/>**（完整网页）；接口文档：**<http://127.0.0.1:8000/docs>**。
 
 ### 环境变量 `backend/.env`
 
