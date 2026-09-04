@@ -109,6 +109,6 @@ python tools/generate_recipes.py --rounds-limit 5   # 先试水
 | 开发者 | 职责 | 文件 | 事项 |
 |---|---|---|---|
 | LaoMM325 | 后端 | `backend/main.py`、`backend/llm.py` | 接口、检索、清洗、错误处理 |
-| liddell | 数据 | `tools/generate_recipes.py`、`backend/data/recipes.json` | 扩库、收录数据质量 |
+| sk64fgt5w4-a11y | 数据 | `tools/generate_recipes.py`、`backend/data/recipes.json` | 扩库、收录数据质量 |
 | yunfei3313 | 前端 | `frontend/index.html`、`app.js`、`style.css` | UI 交互、卡片/账本展示 |
 | caicaizio | Prompt | `backend/prompt.py` | 每日/节日/清洗提示词打磨 |
