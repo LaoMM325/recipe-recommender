@@ -64,15 +64,18 @@ start.bat
 
 ### 环境变量 `backend/.env`
 
-复制 `backend/.env.example` 为 `.env`：
+复制 `backend/.env.example` 为 `.env`。前三个 LLM 变量都由**你所用的大模型服务**决定，按自己的账号配置：
 
 | 变量 | 用途 | 是否必须 |
 |---|---|---|
-| `LLM_API_KEY` | Agnes 大模型：每日菜单生成、网页标题清洗/简介 | 推荐开启（否则每日/清洗走不了） |
-| `LLM_BASE_URL` | `https://apihub.agnes-ai.com/v1` | 开 LLM 时必须 |
-| `LLM_MODEL` | `agnes-2.5-flash`（可换 `agnes-2.5-pro`） | 开 LLM 时必须 |
+| `LLM_API_KEY` | 你的大模型 API Key（OpenAI 兼容服务） | 用每日菜单/标题清洗时必填 |
+| `LLM_BASE_URL` | OpenAI 兼容接口地址，按你所用的服务填 | 同上（必填） |
+| `LLM_MODEL` | 模型名，按你所用的服务填 | 同上（必填） |
 | `MOCK` | `1` 时所有 LLM 调用返回示例，不联网 | 可选 |
 | `TAVILY_API_KEY` | AI 补菜的"全网真实菜谱"检索 | 可选（不配则只做库内补充） |
+
+> 本项目当前演示默认：`LLM_BASE_URL=https://apihub.agnes-ai.com/v1`、`LLM_MODEL=agnes-2.5-flash`（可换 `agnes-2.5-pro`）。
+> 换别家（DeepSeek / OpenAI / Kimi / 通义等）只需改这三行，`.env.example` 里有对应注释。
 
 > ⚠️ `.env` / `api.txt` 已被 `.gitignore` 忽略，**不要提交**，也不要发到公开渠道。
 
