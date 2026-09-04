@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+backend/.venv/
+
+# 密钥与私有配置（绝不能提交）
+api.txt
+**/.env
+!**/.env.example
+backend/.env
+
+# 个人备份 / 原始压缩包 / 日志
+backups/
+uploaded_health_recipe/
+健康菜谱推荐系统.zip
+*.log
+*.bak
+
+# 编辑器 / 系统
+.idea/
+.vscode/
+*.swp
+.DS_Store
+Thumbs.db

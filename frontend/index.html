@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>健康菜谱推荐系统</title>
+  <link href="vendor/bootstrap/bootstrap.min.css" rel="stylesheet">
+  <link href="vendor/fa/css/all.min.css" rel="stylesheet">
+  <link href="style.css" rel="stylesheet">
+</head>
+<body>
+
+<!-- 顶部 -->
+<header class="hero">
+  <div class="container text-center position-relative">
+    <i class="fa-solid fa-bowl-food deco deco-1" aria-hidden="true"></i>
+    <i class="fa-solid fa-carrot deco deco-2" aria-hidden="true"></i>
+    <i class="fa-solid fa-pepper-hot deco deco-3" aria-hidden="true"></i>
+    <span class="hero-spark hs-1" aria-hidden="true">✦</span>
+    <span class="hero-spark hs-2" aria-hidden="true">✧</span>
+    <span class="hero-spark hs-3" aria-hidden="true">❀</span>
+    <span class="hero-spark hs-4" aria-hidden="true">✦</span>
+    <h1 class="hero-title">
+      <i class="fa-solid fa-leaf"></i> 健康菜谱推荐系统
+    </h1>
+    <p class="hero-sub">选择手边的食材与厨具，调节口味偏好，为你匹配最合适的健康菜谱</p>
+    <div class="hero-pills">
+      <span class="hero-pill"><i class="fa-solid fa-basket-shopping"></i> 按现有食材</span>
+      <span class="hero-pill"><i class="fa-solid fa-hourglass-half"></i> 按可用时间</span>
+      <span class="hero-pill"><i class="fa-solid fa-robot"></i> AI 全网搜菜（附来源）</span>
+    </div>
+  </div>
+</header>
+
+<div class="container-fluid app-container pb-4">
+
+  <!-- 需求输入 -->
+  <div class="request-card">
+    <label for="requestInput" class="request-label">
+      <i class="fa-solid fa-comment-dots text-success"></i> 说出你的需求，我来分析
+    </label>
+    <div class="input-group input-group-lg request-input-group">
+      <input type="text" class="form-control" id="requestInput"
+             placeholder="例如：我想用鸡胸肉和西兰花做一道清淡的菜，15 分钟内搞定，不要辣"
+             autocomplete="off">
+      <button class="btn btn-success px-4" type="button" id="analyzeBtn">
+        <i class="fa-solid fa-wand-magic-sparkles"></i> 智能分析
+      </button>
+    </div>
+
+    <div class="d-flex flex-wrap align-items-center gap-2 mt-3">
+      <span class="example-label">试试：</span>
+      <div id="exampleBox" class="d-flex flex-wrap gap-2">
+        <button type="button" class="example-chip" data-text="我想用鸡胸肉和西兰花做清淡的菜，15 分钟内搞定">清淡快手鸡胸西兰花</button>
+        <button type="button" class="example-chip" data-text="家里只有番茄和鸡蛋，来做点酸甜开胃的">番茄鸡蛋开胃菜</button>
+        <button type="button" class="example-chip" data-text="用蒸锅做，海鲜和坚果都不要，20 分钟内">蒸锅少油无海鲜</button>
+        <button type="button" class="example-chip" data-text="我在健身，要高蛋白低糖的重口味菜，半小时">健身高蛋白</button>
+        <button type="button" class="example-chip" data-text="微辣的快手汤，用豆腐">微辣豆腐汤</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="summaryBox" class="mb-4"></div>
+
+  <div class="row g-4">
+
+    <!-- 筛选面板（窄栏） -->
+    <div class="col-12 col-lg-4 col-xl-3 col-xxl-2">
+      <div class="filter-panel filter-panel-sticky">
+        <div class="filter-head d-flex justify-content-between align-items-center">
+          <span><i class="fa-solid fa-sliders"></i> 筛选条件</span>
+          <span class="badge rounded-pill text-bg-success">已选 <span id="selectedCount">0</span> 项</span>
+        </div>
+
+        <div class="filter-body">
+          <div class="filter-block">
+            <div class="filter-title"><i class="fa-solid fa-basket-shopping text-success"></i> 食材选择</div>
+            <div id="ingredientBox"></div>
+
+            <div class="custom-block">
+              <div class="custom-title"><i class="fa-solid fa-pen-to-square text-success"></i> 我的常用食材</div>
+              <div id="customBox"></div>
+              <div class="input-group input-group-sm mt-2">
+                <input type="text" class="form-control" id="customInput" maxlength="10"
+                       placeholder="输入食材名称，如：山药、芦笋" autocomplete="off">
+                <button class="btn btn-outline-success" type="button" id="customAddBtn">
+                  <i class="fa-solid fa-plus"></i> 添加
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="filter-block">
+            <div class="filter-title"><i class="fa-solid fa-kitchen-set text-success"></i> 厨具选择</div>
+            <div id="cookwareBox" class="d-flex flex-wrap gap-2"></div>
+          </div>
+
+          <div class="filter-block">
+            <div class="filter-title"><i class="fa-solid fa-pepper-hot text-success"></i> 口味偏好</div>
+            <div id="flavorBox"></div>
+          </div>
+
+          <div class="filter-block mb-0">
+            <div class="filter-title"><i class="fa-solid fa-triangle-exclamation text-danger"></i> 忌口设置</div>
+            <div id="avoidBox" class="row g-2"></div>
+          </div>
+        </div>
+
+        <div class="filter-foot">
+          <button id="resetBtn" class="btn btn-outline-secondary w-100">
+            <i class="fa-solid fa-rotate-left"></i> 重置全部条件
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 结果区（大幅加宽，账本/每日推荐改为悬浮按钮） -->
+    <div class="col-12 col-lg-8 col-xl-9 col-xxl-10">
+      <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
+        <span class="stat-pill"><i class="fa-solid fa-book-open"></i> 共 <b id="statTotal">0</b> 道菜谱</span>
+        <span class="stat-pill stat-pill-accent"><i class="fa-solid fa-bullseye"></i> 精准匹配 <b id="statMatched">0</b> 道</span>
+        <span class="stat-pill stat-pill-weak" id="statWeakWrap">
+          <i class="fa-regular fa-circle"></i> 弱相关 <b id="statWeak">0</b> 道
+        </span>
+        <span class="stat-pill stat-pill-warn" id="statBlockedWrap">
+          <i class="fa-solid fa-ban"></i> 忌口过滤 <b id="statBlocked">0</b> 道
+        </span>
+        <span class="stat-pill stat-pill-time" id="statTimeWrap">
+          <i class="fa-solid fa-hourglass-half"></i> 超出<span id="statTimeLabel"></span> <b id="statTime">0</b> 道
+        </span>
+        <button type="button" class="btn btn-success btn-sm ms-auto ai-more-btn" id="aiMoreBtn" style="display:none">
+          <i class="fa-solid fa-wand-magic-sparkles"></i> AI 再找几道（检索）
+        </button>
+      </div>
+
+      <div id="resultGrid" class="row g-3"></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- 悬浮面板：菜谱账本 + 每日菜谱推荐（点右下角按钮展开/收起） -->
+<aside class="dock-area" id="dockArea">
+  <div class="float-panel ledger-float" id="ledgerFloat">
+    <div class="float-head">
+      <span class="float-title"><i class="fa-solid fa-book-open"></i> 菜谱账本</span>
+      <span class="float-head-right">
+        <span class="badge rounded-pill text-bg-light text-dark">本地保存</span>
+        <button type="button" class="float-close" data-close="ledgerFloat" title="收起">
+          <i class="fa-solid fa-chevron-down"></i>
+        </button>
+      </span>
+    </div>
+    <div class="float-body">
+      <div class="ledger-sec">
+        <div class="ledger-title">
+          <i class="fa-solid fa-star text-warning"></i> 我的收藏
+          <span class="ledger-num" id="favCount">0</span>
+        </div>
+        <div id="favList" class="ledger-items"></div>
+      </div>
+      <div class="ledger-sec mt-3">
+        <div class="ledger-title">
+          <i class="fa-solid fa-fire-burner text-danger"></i> 烹饪记录（记账）
+          <span class="ledger-num" id="cookCount">0</span>
+        </div>
+        <div id="cookList" class="ledger-items"></div>
+      </div>
+      <button type="button" id="ledgerResetBtn" class="btn btn-sm btn-outline-secondary w-100 mt-3">
+        <i class="fa-solid fa-trash-can"></i> 清空账本
+      </button>
+    </div>
+  </div>
+
+  <div class="float-panel daily-float" id="dailyFloat">
+    <div class="float-head">
+      <span class="float-title"><i class="fa-solid fa-sun"></i> 每日菜谱推荐</span>
+      <span class="float-head-right">
+        <span class="badge rounded-pill text-bg-warning-subtle text-dark">AI 建议</span>
+        <button type="button" class="float-close" data-close="dailyFloat" title="收起">
+          <i class="fa-solid fa-chevron-down"></i>
+        </button>
+      </span>
+    </div>
+    <div class="float-body">
+      <p class="daily-desc">结合今天的气候与你近期做菜口味，让 AI 配一餐。建议的菜谱可点“下厨房/B站”查看真实做法。</p>
+      <div class="fest-row" id="festivalChips">
+        <span class="fest-label"><i class="fa-solid fa-flag"></i> 节日特供</span>
+        <button type="button" class="fest-chip" data-festival="春节">春节</button>
+        <button type="button" class="fest-chip" data-festival="元宵">元宵</button>
+        <button type="button" class="fest-chip" data-festival="清明">清明</button>
+        <button type="button" class="fest-chip" data-festival="端午">端午</button>
+        <button type="button" class="fest-chip" data-festival="七夕">七夕</button>
+        <button type="button" class="fest-chip" data-festival="中秋">中秋</button>
+        <button type="button" class="fest-chip" data-festival="重阳">重阳</button>
+        <button type="button" class="fest-chip" data-festival="冬至">冬至</button>
+        <button type="button" class="fest-chip" data-festival="腊八">腊八</button>
+      </div>
+      <button type="button" id="dailyBtn" class="btn btn-success w-100 mt-2">
+        <i class="fa-solid fa-wand-magic-sparkles"></i> 生成今日菜单
+      </button>
+      <div id="dailyResult" class="daily-result"></div>
+    </div>
+  </div>
+
+  <div class="dock-btns">
+    <button type="button" class="dock-btn" data-toggle="ledgerFloat" title="菜谱账本（收藏 / 烹饪记账）">
+      <i class="fa-solid fa-book-open"></i>
+      <span class="dock-label">账本</span>
+      <span class="dock-badge" id="dockLedgerBadge"></span>
+    </button>
+    <button type="button" class="dock-btn dock-btn-daily" data-toggle="dailyFloat" title="每日菜谱推荐（AI 生成）">
+      <i class="fa-solid fa-sun"></i>
+      <span class="dock-label">每日菜单</span>
+    </button>
+  </div>
+</aside>
+
+<footer class="text-center text-muted py-4 small footer-note">
+  <span class="footer-heart"><i class="fa-solid fa-heart"></i></span>
+  本地菜谱库精确检索 · AI 从全网检索真实菜谱（附来源链接，可溯源）· 综合项目实践小组作品
+  <span class="footer-heart"><i class="fa-solid fa-heart"></i></span>
+</footer>
+
+<script src="vendor/bootstrap/bootstrap.bundle.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

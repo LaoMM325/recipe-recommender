@@ -1,0 +1,3225 @@
+/* ============================================================
+   健康菜谱推荐系统 · 现代高级视觉规范
+   主题：清新食养 · 极简质感 · 动效交互
+   ============================================================ */
+
+:root {
+  /* 品牌核心色盘 (Emerald & Teal & Mint) */
+  --primary: #059669;
+  --primary-hover: #047857;
+  --primary-light: #10b981;
+  --primary-soft: #ecfdf5;
+  --primary-glow: rgba(16, 185, 129, 0.25);
+  
+  --teal: #0d9488;
+  --teal-light: #14b8a6;
+  --cyan: #0284c7;
+
+  /* AI 专属炫彩渐变 */
+  --ai-purple: #7c3aed;
+  --ai-indigo: #6366f1;
+  --ai-soft: #f5f3ff;
+  --ai-glow: rgba(124, 58, 237, 0.28);
+
+  /* 警示与状态色 */
+  --warning: #f59e0b;
+  --warning-soft: #fffbeb;
+  --danger: #ef4444;
+  --danger-soft: #fef2f2;
+  --info: #0284c7;
+  --info-soft: #f0f9ff;
+
+  /* 中性背景与文字系统 */
+  --slate-950: #020617;
+  --slate-900: #0f172a;
+  --slate-800: #1e293b;
+  --slate-700: #334155;
+  --slate-600: #475569;
+  --slate-500: #64748b;
+  --slate-400: #94a3b8;
+  --slate-300: #cbd5e1;
+  --slate-200: #e2e8f0;
+  --slate-100: #f1f5f9;
+  --slate-50:  #f8fafc;
+  
+  --page-bg: #f5f7f6;
+  --card-bg: #ffffff;
+  --card-border: #e6ece8;
+
+  /* 阴影体系 */
+  --shadow-xs: 0 1px 2px rgba(15, 23, 42, 0.04);
+  --shadow-sm: 0 2px 6px rgba(15, 23, 42, 0.06);
+  --shadow-md: 0 8px 24px -4px rgba(15, 23, 42, 0.08), 0 2px 6px -1px rgba(15, 23, 42, 0.04);
+  --shadow-lg: 0 20px 35px -8px rgba(15, 23, 42, 0.12), 0 4px 12px -2px rgba(15, 23, 42, 0.06);
+  --shadow-float: 0 24px 48px -12px rgba(5, 150, 105, 0.22);
+  --shadow-glow: 0 0 25px rgba(16, 185, 129, 0.35);
+
+  /* 圆角 */
+  --radius-xs: 0.375rem;
+  --radius-sm: 0.625rem;
+  --radius-md: 0.875rem;
+  --radius-lg: 1.25rem;
+  --radius-xl: 1.75rem;
+  --radius-full: 9999px;
+
+  /* 动画曲线 */
+  --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  --ease-smooth: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* 基础重置与排版 */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background-color: var(--page-bg);
+  background-image: 
+    radial-gradient(at 10% 10%, rgba(16, 185, 129, 0.07) 0px, transparent 50%),
+    radial-gradient(at 90% 20%, rgba(13, 148, 136, 0.08) 0px, transparent 50%),
+    radial-gradient(at 50% 90%, rgba(245, 158, 11, 0.05) 0px, transparent 50%);
+  background-attachment: fixed;
+  color: var(--slate-800);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.6;
+}
+
+::selection {
+  background: rgba(16, 185, 129, 0.25);
+  color: var(--primary-hover);
+}
+
+/* 自定义现代滚动条 */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: var(--radius-full);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* ============================================================
+   1. 顶部 Hero Banner
+   ============================================================ */
+.hero {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #065f46 0%, #059669 35%, #0d9488 70%, #0284c7 100%);
+  color: #ffffff;
+  padding: 4.2rem 1.5rem 5.8rem;
+  border-radius: 0 0 2.5rem 2.5rem;
+  box-shadow: 0 20px 45px -15px rgba(6, 95, 70, 0.45);
+}
+
+/* 顶部光影网格叠加层 */
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.15) 1.5px, transparent 1.5px);
+  background-size: 28px 28px;
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+.hero::after {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -20%;
+  width: 140%;
+  height: 200%;
+  background: radial-gradient(circle at 50% 30%, rgba(255, 255, 255, 0.18), transparent 60%);
+  pointer-events: none;
+}
+
+.hero-title {
+  font-weight: 900;
+  font-size: clamp(1.85rem, 4.5vw, 2.75rem);
+  letter-spacing: -0.5px;
+  margin-bottom: 0.75rem;
+  text-shadow: 0 4px 16px rgba(6, 78, 59, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+}
+
+.hero-title i {
+  color: #a7f3d0;
+  filter: drop-shadow(0 2px 8px rgba(167, 243, 208, 0.5));
+  animation: leafSway 4s ease-in-out infinite;
+}
+
+@keyframes leafSway {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(10deg); }
+}
+
+.hero-sub {
+  margin: 0 auto;
+  max-width: 640px;
+  font-size: 1.05rem;
+  color: #ecfdf5;
+  font-weight: 400;
+  letter-spacing: 0.3px;
+  opacity: 0.95;
+}
+
+/* 漂浮装饰元素 */
+.deco {
+  position: absolute;
+  color: rgba(255, 255, 255, 0.35);
+  filter: drop-shadow(0 8px 16px rgba(6, 95, 70, 0.3));
+  pointer-events: none;
+  animation: floatEmoji 6s ease-in-out infinite alternate;
+}
+
+.deco-1 {
+  font-size: 2.75rem;
+  top: 15%;
+  left: 6%;
+  transform: rotate(-12deg);
+}
+
+.deco-2 {
+  font-size: 2.2rem;
+  top: 55%;
+  right: 7%;
+  transform: rotate(15deg);
+  animation-delay: -2s;
+}
+
+.deco-3 {
+  font-size: 1.75rem;
+  top: 25%;
+  right: 18%;
+  transform: rotate(-8deg);
+  animation-delay: -4s;
+}
+
+@keyframes floatEmoji {
+  0% { transform: translateY(0) rotate(-6deg); }
+  100% { transform: translateY(-16px) rotate(8deg); }
+}
+
+/* 顶部功能胶囊标签 */
+.hero-pills {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.6rem;
+  margin-top: 1.4rem;
+}
+
+.hero-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: var(--radius-full);
+  padding: 0.35rem 0.95rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: all 0.25s ease;
+}
+
+.hero-pill:hover {
+  background: rgba(255, 255, 255, 0.28);
+  transform: translateY(-2px);
+}
+
+.hero-pill i {
+  color: #6ee7b7;
+}
+
+/* ============================================================
+   2. 智能需求分析输入卡 (Floating Search Card)
+   ============================================================ */
+.request-card {
+  background: var(--card-bg);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  border-radius: var(--radius-lg);
+  padding: 1.75rem 1.85rem;
+  margin-top: -3.2rem;
+  position: relative;
+  z-index: 20;
+  box-shadow: var(--shadow-float);
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+  animation: cardEntrance 0.5s var(--ease-smooth) both;
+}
+
+.request-card:hover {
+  box-shadow: 0 28px 56px -12px rgba(5, 150, 105, 0.26);
+}
+
+.request-label {
+  font-weight: 800;
+  font-size: 1.05rem;
+  color: var(--slate-900);
+  margin-bottom: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.request-label i {
+  font-size: 1.15rem;
+  color: var(--primary);
+}
+
+/* 输入框组合 */
+.request-input-group {
+  box-shadow: var(--shadow-sm);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  transition: box-shadow 0.25s ease;
+}
+
+.request-input-group:focus-within {
+  box-shadow: 0 0 0 3.5px var(--primary-glow), var(--shadow-md);
+}
+
+.request-input-group .form-control {
+  border: 1.5px solid var(--slate-200);
+  border-right: none;
+  border-radius: var(--radius-md) 0 0 var(--radius-md);
+  padding: 0.85rem 1.25rem;
+  font-size: 0.98rem;
+  background: #fafcfb;
+  color: var(--slate-800);
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.request-input-group .form-control:focus {
+  background: #ffffff;
+  border-color: var(--primary);
+  box-shadow: none;
+}
+
+.request-input-group .form-control::placeholder {
+  color: var(--slate-400);
+  font-size: 0.92rem;
+}
+
+/* 智能分析按钮 */
+.request-input-group .btn {
+  border: none;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--teal) 100%);
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 0.98rem;
+  padding: 0.85rem 1.6rem;
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  transition: all 0.25s ease;
+}
+
+.request-input-group .btn:hover {
+  background: linear-gradient(135deg, #047857 0%, #0f766e 100%);
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.request-input-group .btn:active {
+  transform: translateY(1px);
+}
+
+/* 示例需求标签 */
+.example-label {
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: var(--slate-500);
+}
+
+.example-chip {
+  border: 1.5px solid #d1fae5;
+  background: #f0fdf4;
+  color: #065f46;
+  border-radius: var(--radius-full);
+  padding: 0.3rem 0.85rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  transition: all 0.2s var(--ease-spring);
+}
+
+.example-chip:hover {
+  background: var(--primary);
+  color: #ffffff;
+  border-color: var(--primary);
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 6px 14px -3px rgba(16, 185, 129, 0.45);
+}
+
+.example-chip:active {
+  transform: scale(0.97);
+}
+
+/* ============================================================
+   3. 分析摘要卡片 (Summary Card)
+   ============================================================ */
+.summary-card {
+  background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 50%, #f0fdfa 100%);
+  border: 1.5px solid #a7f3d0;
+  border-radius: var(--radius-md);
+  padding: 1.2rem 1.4rem;
+  box-shadow: 0 8px 20px -6px rgba(16, 185, 129, 0.2);
+  animation: fadeInDown 0.35s ease both;
+}
+
+.summary-title {
+  font-weight: 800;
+  font-size: 1rem;
+  color: var(--slate-900);
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.summary-title i {
+  color: var(--primary);
+}
+
+.summary-quote {
+  color: var(--primary-hover);
+  font-weight: 700;
+}
+
+#clearRequestBtn {
+  border-radius: var(--radius-full);
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 0.25rem 0.75rem;
+  transition: all 0.2s ease;
+}
+
+.sum-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: #ffffff;
+  border: 1px solid var(--slate-200);
+  color: var(--slate-700);
+  border-radius: var(--radius-full);
+  padding: 0.25rem 0.75rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  box-shadow: var(--shadow-xs);
+}
+
+.sum-avoid {
+  border-color: #fecaca;
+  background: #fef2f2;
+  color: #b91c1c;
+}
+
+.sum-time, .sum-key {
+  border-color: #bae6fd;
+  background: #f0f9ff;
+  color: #0369a1;
+}
+
+.sum-ing, .sum-cook {
+  border-color: #a7f3d0;
+  background: #ecfdf5;
+  color: #047857;
+}
+
+.sum-flavor {
+  border-color: #fde68a;
+  background: #fffbeb;
+  color: #b45309;
+}
+
+/* ============================================================
+   4. 统计状态条 (Stats Header)
+   ============================================================ */
+.stat-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: #ffffff;
+  border: 1px solid var(--slate-200);
+  border-radius: var(--radius-full);
+  padding: 0.4rem 1rem;
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: var(--slate-600);
+  box-shadow: var(--shadow-xs);
+  transition: all 0.2s ease;
+}
+
+.stat-pill:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+.stat-pill b {
+  font-weight: 800;
+  color: var(--slate-900);
+}
+
+.stat-pill-accent {
+  background: #ecfdf5;
+  border-color: #a7f3d0;
+  color: #065f46;
+}
+
+.stat-pill-accent b {
+  color: var(--primary);
+  font-size: 0.95rem;
+}
+
+.stat-pill-warn {
+  background: #fef2f2;
+  border-color: #fecaca;
+  color: #991b1b;
+}
+
+.stat-pill-warn b {
+  color: #dc2626;
+}
+
+.stat-pill-time {
+  background: #f0f9ff;
+  border-color: #bae6fd;
+  color: #0369a1;
+}
+
+.stat-pill-time b {
+  color: #0284c7;
+}
+
+.stat-pill-weak {
+  background: #f8fafc;
+  border-color: var(--slate-200);
+  color: var(--slate-500);
+}
+
+.stat-pill-weak b {
+  color: var(--slate-700);
+}
+
+/* 补充检索（放宽条件再找）按钮 */
+.ai-more-btn {
+  background: linear-gradient(135deg, var(--ai-purple) 0%, var(--primary) 100%) !important;
+  border: none !important;
+  color: #ffffff !important;
+  font-weight: 800 !important;
+  font-size: 0.86rem !important;
+  padding: 0.45rem 1.15rem !important;
+  border-radius: var(--radius-full) !important;
+  box-shadow: 0 6px 18px -4px var(--ai-glow);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  cursor: pointer;
+  transition: all 0.25s ease !important;
+}
+
+.ai-more-btn:hover {
+  background: linear-gradient(135deg, #6d28d9 0%, #047857 100%) !important;
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 10px 24px -4px var(--ai-glow);
+}
+
+.ai-more-btn:not(:disabled) {
+  animation: aiPulse 2.5s infinite;
+}
+
+@keyframes aiPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(124, 58, 237, 0.4); }
+  50% { box-shadow: 0 0 0 8px rgba(124, 58, 237, 0); }
+}
+
+/* ============================================================
+   5. 左侧筛选面板 (Filter Sidebar)
+   ============================================================ */
+.filter-panel {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  transition: box-shadow 0.3s ease;
+}
+
+.filter-head {
+  background: linear-gradient(135deg, #065f46 0%, #059669 100%);
+  color: #ffffff;
+  padding: 1.1rem 1.35rem;
+  font-weight: 800;
+  font-size: 1.05rem;
+  letter-spacing: 0.3px;
+  position: sticky;
+  top: 0;
+  z-index: 15;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.filter-head .badge {
+  background: rgba(255, 255, 255, 0.22) !important;
+  backdrop-filter: blur(4px);
+  font-weight: 700;
+  font-size: 0.8rem;
+  padding: 0.35rem 0.75rem;
+  border-radius: var(--radius-full);
+}
+
+.filter-body {
+  padding: 1.35rem;
+}
+
+.filter-block {
+  margin-bottom: 1.6rem;
+}
+
+.filter-title {
+  font-weight: 800;
+  font-size: 0.95rem;
+  color: var(--slate-900);
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.45rem;
+  border-bottom: 1.5px dashed var(--slate-200);
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.filter-title i {
+  color: var(--primary);
+  font-size: 1rem;
+}
+
+.filter-foot {
+  padding: 1rem 1.35rem;
+  background: var(--slate-50);
+  border-top: 1px solid var(--slate-200);
+}
+
+#resetBtn {
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  padding: 0.55rem 1rem;
+  color: var(--slate-600);
+  border-color: var(--slate-300);
+  transition: all 0.2s ease;
+}
+
+#resetBtn:hover {
+  background: var(--slate-200);
+  color: var(--slate-900);
+}
+
+/* 食材/厨具选择标签 (Interactive Chips) */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  border: 1.5px solid var(--slate-200);
+  background: #ffffff;
+  color: var(--slate-700);
+  border-radius: var(--radius-full);
+  padding: 0.35rem 0.9rem;
+  font-size: 0.86rem;
+  font-weight: 600;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.2s var(--ease-spring);
+  margin: 0 0.4rem 0.5rem 0;
+  box-shadow: var(--shadow-xs);
+}
+
+.chip i {
+  font-size: 0.82rem;
+  color: var(--slate-400);
+  transition: color 0.2s ease;
+}
+
+.chip:hover {
+  border-color: var(--primary-light);
+  background: var(--primary-soft);
+  color: var(--primary-hover);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+}
+
+.chip:hover i {
+  color: var(--primary);
+}
+
+/* 激活状态 */
+.chip-active,
+.chip-active:hover {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--teal) 100%) !important;
+  border-color: transparent !important;
+  color: #ffffff !important;
+  box-shadow: 0 6px 16px -3px var(--primary-glow) !important;
+  transform: translateY(-1px) scale(1.02);
+}
+
+.chip-active i,
+.chip-active:hover i {
+  color: #ffffff !important;
+}
+
+/* 自定义食材区 */
+.custom-block {
+  margin-top: 1rem;
+  padding: 0.95rem 1rem;
+  background: #f8faf9;
+  border: 1.5px dashed #a7f3d0;
+  border-radius: var(--radius-md);
+}
+
+.custom-title {
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: var(--slate-800);
+  margin-bottom: 0.55rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.custom-title i {
+  color: var(--primary);
+}
+
+.hint-text {
+  font-size: 0.78rem;
+  color: var(--slate-500);
+  line-height: 1.45;
+}
+
+.chip-custom {
+  padding-right: 0.45rem;
+}
+
+.chip-remove {
+  margin-left: 0.35rem;
+  font-size: 0.75rem;
+  opacity: 0.6;
+  padding: 0.15rem;
+  border-radius: var(--radius-full);
+  transition: all 0.2s ease;
+}
+
+.chip-remove:hover {
+  opacity: 1;
+  background: rgba(0, 0, 0, 0.15);
+  transform: scale(1.15);
+}
+
+/* 口味滑块调节 (Modern Range Slider) */
+.flavor-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.65rem;
+  padding: 0.35rem 0.5rem;
+  border-radius: var(--radius-sm);
+  background: #fafcfb;
+  transition: background-color 0.2s ease;
+}
+
+.flavor-row:hover {
+  background: #f0fdf4;
+}
+
+.flavor-label {
+  width: 3.6rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--slate-700);
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.flavor-label i {
+  color: var(--primary);
+  font-size: 0.85rem;
+}
+
+.flavor-range {
+  flex: 1;
+  accent-color: var(--primary);
+  cursor: pointer;
+  height: 6px;
+}
+
+.flavor-value {
+  width: 1.8rem;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  font-weight: 800;
+  font-size: 0.95rem;
+  color: var(--primary);
+}
+
+/* 忌口多选框 */
+.form-check {
+  padding-left: 1.85rem;
+  margin-bottom: 0.45rem;
+}
+
+.form-check-input {
+  cursor: pointer;
+  border: 1.5px solid var(--slate-300);
+  border-radius: var(--radius-xs);
+  transition: all 0.2s ease;
+}
+
+.form-check-input:checked {
+  background-color: var(--danger);
+  border-color: var(--danger);
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
+}
+
+.form-check-label {
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--slate-700);
+  cursor: pointer;
+  user-select: none;
+}
+
+/* ============================================================
+   6. 菜谱卡片网格 (Recipe Cards Grid)
+   ============================================================ */
+#resultGrid {
+  align-items: stretch;
+}
+
+.recipe-card {
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-lg);
+  background: var(--card-bg);
+  overflow: hidden;
+  position: relative;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.28s var(--ease-spring), box-shadow 0.28s ease, border-color 0.28s ease;
+  animation: cardEntrance 0.4s var(--ease-smooth) both;
+}
+
+/* 卡片顶部高光边 */
+.recipe-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--primary) 0%, var(--teal) 50%, var(--cyan) 100%);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.recipe-card:hover {
+  transform: translateY(-6px);
+  border-color: #a7f3d0;
+  box-shadow: var(--shadow-lg);
+}
+
+.recipe-card:hover::before {
+  opacity: 1;
+}
+
+@keyframes cardEntrance {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.recipe-name {
+  font-size: 1.12rem;
+  font-weight: 800;
+  color: var(--slate-900);
+  letter-spacing: -0.2px;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.recipe-name i {
+  color: var(--primary);
+  font-size: 1.05rem;
+}
+
+/* 匹配度评分徽章 */
+.match-badge {
+  font-weight: 800;
+  font-size: 0.85rem;
+  border-radius: var(--radius-full);
+  padding: 0.25rem 0.75rem;
+  white-space: nowrap;
+  letter-spacing: 0.2px;
+  box-shadow: var(--shadow-xs);
+}
+
+.match-high {
+  background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+  color: #15803d;
+  border: 1px solid #86efac;
+}
+
+.match-mid {
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  color: #b45309;
+  border: 1px solid #fcd34d;
+}
+
+.match-low {
+  background: #f1f5f9;
+  color: #64748b;
+  border: 1px solid var(--slate-200);
+}
+
+/* 匹配进度条 */
+.match-progress {
+  height: 6px;
+  border-radius: var(--radius-full);
+  background: #f1f5f9;
+  overflow: hidden;
+}
+
+.match-progress .progress-bar {
+  border-radius: var(--radius-full);
+  transition: width 0.6s var(--ease-smooth);
+}
+
+/* 元数据图标 */
+.recipe-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--slate-500);
+  margin-bottom: 0.75rem;
+}
+
+.recipe-meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: var(--slate-50);
+  padding: 0.2rem 0.55rem;
+  border-radius: var(--radius-xs);
+}
+
+.recipe-meta i {
+  color: var(--teal);
+}
+
+.recipe-desc {
+  font-size: 0.88rem;
+  color: var(--slate-600);
+  margin-bottom: 0.75rem;
+  line-height: 1.55;
+}
+
+/* 标签系统 */
+.tag {
+  display: inline-block;
+  background: var(--slate-100);
+  color: var(--slate-700);
+  border-radius: var(--radius-xs);
+  padding: 0.2rem 0.55rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  margin: 0 0.3rem 0.35rem 0;
+}
+
+.tag-hit {
+  background: #dcfce7;
+  color: #166534;
+  font-weight: 700;
+  box-shadow: inset 0 0 0 1px #86efac;
+}
+
+.tag-seasoning {
+  background: transparent;
+  border: 1px dashed var(--slate-300);
+  color: var(--slate-500);
+}
+
+.tag-warn {
+  background: var(--danger-soft);
+  color: #991b1b;
+  font-weight: 700;
+  border: 1px solid #fecaca;
+}
+
+.reason-line {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--slate-500);
+  padding-top: 0.65rem;
+  border-top: 1px dashed var(--slate-200);
+  line-height: 1.45;
+}
+
+/* 做法步骤展开框 (Cooking Timeline Style) */
+.steps-box {
+  background: #fafcfb;
+  border-left: 3.5px solid var(--primary);
+  border-radius: var(--radius-sm);
+  padding: 0.95rem 1.1rem;
+  font-size: 0.88rem;
+  color: var(--slate-800);
+  box-shadow: var(--shadow-xs);
+}
+
+.steps-box ol {
+  margin: 0;
+  padding-left: 1.25rem;
+}
+
+.steps-box li {
+  margin-bottom: 0.45rem;
+  line-height: 1.6;
+}
+
+.steps-box li:last-child {
+  margin-bottom: 0;
+}
+
+/* 视频按钮 */
+.btn-outline-danger {
+  border-color: #f87171;
+  color: #ef4444;
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  transition: all 0.2s ease;
+}
+
+.btn-outline-danger:hover {
+  background: linear-gradient(135deg, #fb7185 0%, #e11d48 100%);
+  border-color: transparent;
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(225, 29, 72, 0.3);
+}
+
+.btn-outline-success {
+  border-color: #86efac;
+  color: #16a34a;
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  transition: all 0.2s ease;
+}
+
+.btn-outline-success:hover {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--teal) 100%);
+  border-color: transparent;
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px var(--primary-glow);
+}
+
+/* “下厨房搜做法”直达按钮 */
+.btn-xcf {
+  border: 1.5px solid #ffb68c;
+  color: #d94f0a;
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  background: #fff7f0;
+  transition: all 0.2s ease;
+}
+
+.btn-xcf:hover {
+  background: linear-gradient(135deg, #ff7a2f 0%, #e8500e 100%);
+  border-color: transparent;
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(232, 80, 14, 0.3);
+}
+
+/* ============================================================
+   7. 弱相关 / 补充检索区
+   ============================================================ */
+.weak-zone {
+  background: rgba(255, 255, 255, 0.85);
+  border: 1.5px dashed var(--slate-300);
+  border-radius: var(--radius-lg);
+  padding: 1.2rem 1.4rem;
+  backdrop-filter: blur(8px);
+}
+
+.weak-title {
+  font-weight: 800;
+  font-size: 1rem;
+  color: var(--slate-700);
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.weak-title i {
+  color: var(--primary);
+}
+
+.weak-sub {
+  font-size: 0.82rem;
+  color: var(--slate-500);
+  margin-left: 0.5rem;
+}
+
+.recipe-card-weak {
+  background: #f8fafc;
+  opacity: 0.85;
+}
+
+.recipe-card-weak:hover {
+  opacity: 1;
+}
+
+/* ============================================================
+   8. 空状态展示 (Empty State)
+   ============================================================ */
+.empty-state {
+  background: var(--card-bg);
+  border: 2px dashed var(--slate-200);
+  border-radius: var(--radius-lg);
+  padding: 3.5rem 1.5rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.empty-state i {
+  color: var(--slate-300) !important;
+}
+
+/* ============================================================
+   9. 页脚设计
+   ============================================================ */
+.footer-note {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  color: var(--slate-400);
+  font-size: 0.85rem;
+  letter-spacing: 0.2px;
+}
+
+.footer-heart {
+  color: #f87171;
+  font-size: 0.8rem;
+  animation: heartBeat 2s infinite ease-in-out;
+}
+
+@keyframes heartBeat {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+}
+
+/* ============================================================
+   9.5 结果区：分类 Tab + 分页
+   ============================================================ */
+.res-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  margin: 0.1rem 0 0.9rem;
+}
+
+.res-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.res-tab {
+  border: 1.5px solid var(--slate-200);
+  background: #ffffff;
+  color: var(--slate-600);
+  border-radius: var(--radius-full);
+  padding: 0.28rem 0.85rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.res-tab:hover {
+  border-color: var(--primary-light);
+  color: var(--primary-hover);
+  transform: translateY(-1px);
+}
+
+.res-tab.tab-on,
+.res-tab.tab-on:hover {
+  background: linear-gradient(135deg, var(--primary), var(--teal));
+  border-color: transparent;
+  color: #ffffff;
+  box-shadow: 0 4px 12px -2px var(--primary-glow);
+  transform: none;
+}
+
+.res-pager {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.pg-btn {
+  min-width: 2rem;
+  height: 2rem;
+  padding: 0 0.55rem;
+  border: 1.5px solid var(--slate-200);
+  background: #ffffff;
+  color: var(--slate-700);
+  border-radius: 0.55rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.16s ease;
+}
+
+.pg-btn:hover {
+  border-color: var(--primary);
+  color: var(--primary-hover);
+}
+
+.pg-btn.pg-on,
+.pg-btn.pg-on:hover {
+  background: linear-gradient(135deg, var(--primary), var(--teal));
+  border-color: transparent;
+  color: #ffffff;
+  box-shadow: 0 4px 10px -2px var(--primary-glow);
+}
+
+.pg-dots {
+  color: var(--slate-400);
+  padding: 0 0.15rem;
+  font-weight: 700;
+}
+
+.pg-info {
+  font-size: 0.78rem;
+  color: var(--slate-500);
+  font-weight: 600;
+  margin-left: 0.3rem;
+}
+
+.empty-cat {
+  background: var(--slate-50);
+  border: 1.5px dashed var(--slate-200);
+  border-radius: var(--radius-md);
+  color: var(--slate-500);
+  font-size: 0.88rem;
+  padding: 1.2rem 1rem;
+  text-align: center;
+}
+
+/* ============================================================
+   10. 响应式布局适配 (Mobile Optimizations)
+   ============================================================ */
+@media (max-width: 991.98px) {
+  .hero {
+    padding: 3rem 1.25rem 4.5rem;
+    border-radius: 0 0 1.75rem 1.75rem;
+  }
+  .filter-head {
+    position: static;
+  }
+  .deco {
+    display: none;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .request-card {
+    padding: 1.25rem 1.1rem;
+    margin-top: -2.5rem;
+  }
+  .request-input-group {
+    flex-direction: column;
+  }
+  .request-input-group .form-control {
+    border-radius: var(--radius-md) var(--radius-md) 0 0;
+    border-right: 1.5px solid var(--slate-200);
+    border-bottom: none;
+  }
+  .request-input-group .btn {
+    border-radius: 0 0 var(--radius-md) var(--radius-md);
+    justify-content: center;
+    width: 100%;
+  }
+  .recipe-card:hover {
+    transform: none;
+  }
+}
+
+/* ============================================================
+   11. 一屏工作台布局（桌面 ≥992px）
+   目标：把“顶部横幅 + 左筛选 + 右结果”压缩进一屏，
+   左筛选吸顶且内部可滚（头/重置按钮固定可见），右结果区内部滚动。
+   ============================================================ */
+@media (min-width: 992px) {
+  /* ---- 顶部横幅压缩 ---- */
+  .hero {
+    padding: 1.5rem 1rem 2.6rem;
+    border-radius: 0 0 1.6rem 1.6rem;
+  }
+  .hero-title {
+    font-size: 1.55rem;
+    margin-bottom: 0.3rem;
+  }
+  .hero-sub {
+    font-size: 0.87rem;
+  }
+  .hero-pills {
+    margin-top: 0.55rem;
+    gap: 0.4rem;
+  }
+  .hero-pill {
+    font-size: 0.72rem;
+    padding: 0.2rem 0.7rem;
+  }
+  .deco {
+    display: none;
+  }
+
+  /* ---- 需求输入卡压缩 ---- */
+  .request-card {
+    padding: 0.85rem 1.1rem 0.7rem;
+    margin-top: -2rem;
+  }
+  .request-label {
+    font-size: 0.92rem;
+    margin-bottom: 0.45rem;
+  }
+  .request-input-group {
+    border-radius: var(--radius-sm);
+  }
+  .request-input-group .form-control {
+    padding: 0.5rem 0.9rem;
+    font-size: 0.9rem;
+  }
+  .request-input-group .btn {
+    padding: 0.5rem 1.1rem;
+    font-size: 0.9rem;
+  }
+  .example-label {
+    font-size: 0.74rem;
+  }
+  .example-chip {
+    font-size: 0.74rem;
+    padding: 0.2rem 0.65rem;
+  }
+  .summary-card {
+    padding: 0.8rem 1rem;
+  }
+  .summary-title {
+    font-size: 0.9rem;
+  }
+  .sum-chip {
+    font-size: 0.74rem;
+    padding: 0.18rem 0.6rem;
+  }
+  body > .container.pb-5 {
+    padding-bottom: 0.5rem;
+  }
+
+  /* ---- 右侧：每页固定 9 张，正常页面流（不套内滚容器） ---- */
+
+  /* ---- 左侧：筛选面板吸顶 + 内部滚动（只作用于筛选栏）---- */
+  .filter-panel-sticky {
+    position: sticky;
+    top: 10px;
+    max-height: calc(100vh - 20px);
+    display: flex;
+    flex-direction: column;
+    border-radius: var(--radius-lg);
+  }
+  .filter-panel-sticky .filter-head {
+    flex: 0 0 auto;
+  }
+  .filter-panel-sticky .filter-body {
+    flex: 1 1 auto;
+    overflow-y: auto;
+  }
+  .filter-head {
+    padding: 0.65rem 0.95rem;
+    font-size: 0.95rem;
+  }
+  .filter-body {
+    padding: 0.7rem 0.85rem 0.3rem;
+    scrollbar-gutter: stable;
+  }
+  .filter-body::-webkit-scrollbar {
+    width: 6px;
+  }
+  .filter-foot {
+    padding: 0.6rem 0.85rem;
+  }
+  .filter-title {
+    margin-bottom: 0.5rem;
+  }
+
+  /* ---- 食材/厨具 chips 网格密集化（3 列）---- */
+  .chip-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.3rem 0.35rem;
+  }
+  .chip-grid .chip {
+    width: 100%;
+    margin: 0;
+    justify-content: center;
+    text-align: center;
+    padding: 0.3rem 0.2rem;
+    font-size: 0.8rem;
+  }
+  #cookwareBox {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.3rem 0.35rem;
+  }
+  #cookwareBox .chip {
+    width: 100%;
+    margin: 0;
+    justify-content: center;
+    font-size: 0.8rem;
+    padding: 0.3rem 0.2rem;
+  }
+  .filter-block-cat {
+    margin-bottom: 0.55rem;
+  }
+  .filter-block-cat .filter-title {
+    font-size: 0.78rem;
+    margin-bottom: 0.28rem;
+    padding-bottom: 0.1rem;
+    border-bottom: none;
+    color: var(--slate-500);
+  }
+  .filter-block-cat .filter-title i {
+    font-size: 0.8rem;
+  }
+
+  /* ---- 自定义食材区 ---- */
+  .custom-block {
+    margin-top: 0.4rem;
+    padding: 0.5rem 0.6rem 0.45rem;
+  }
+  .custom-title {
+    font-size: 0.8rem;
+    margin-bottom: 0.3rem;
+  }
+  .hint-text {
+    font-size: 0.7rem;
+  }
+  .chip-custom {
+    font-size: 0.8rem;
+    padding: 0.28rem 0.6rem;
+  }
+
+  /* ---- 口味滑块行 ---- */
+  .flavor-row {
+    padding: 0.18rem 0.3rem;
+    margin-bottom: 0.25rem;
+  }
+  .flavor-label {
+    width: 3.1rem;
+    font-size: 0.8rem;
+    gap: 0.2rem;
+  }
+  .flavor-label i {
+    display: none;
+  }
+  .flavor-range {
+    height: 5px;
+  }
+
+  /* ---- 忌口复选框两列 ---- */
+  #avoidBox {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.15rem 0.4rem;
+  }
+  #avoidBox .form-check {
+    margin: 0;
+    padding-left: 1.45rem;
+  }
+  #avoidBox .form-check-label {
+    font-size: 0.82rem;
+  }
+
+  /* ---- 统计条瘦身 ---- */
+  .stat-pill {
+    font-size: 0.78rem;
+    padding: 0.28rem 0.7rem;
+  }
+  .ai-more-btn {
+    font-size: 0.8rem !important;
+    padding: 0.35rem 0.9rem !important;
+  }
+  .footer-note {
+    font-size: 0.75rem;
+  }
+}
+
+/* ============================================================
+   12. 菜谱账本（收藏 + 烹饪记账）
+   ============================================================ */
+.ledger-panel {
+  display: flex;
+  flex-direction: column;
+}
+
+.ledger-body {
+  padding: 0.9rem 1rem 1rem;
+}
+
+.ledger-title {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-weight: 800;
+  font-size: 0.92rem;
+  color: var(--slate-800);
+  margin-bottom: 0.5rem;
+}
+
+.ledger-num {
+  margin-left: auto;
+  background: var(--slate-100);
+  color: var(--slate-600);
+  border-radius: var(--radius-full);
+  padding: 0.05rem 0.55rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.ledger-items {
+  /* 容器：内层 .ledger-grid 管两列方块，空态/分页条整行排列 */
+  min-width: 0;
+}
+
+.ledger-row {
+  background: #fafcfb;
+  border: 1px solid var(--card-border);
+  border-radius: 0.6rem;
+  padding: 0.4rem 0.6rem;
+}
+
+.ledger-fav-row {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.3rem 0.55rem;
+}
+
+.ledger-name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: var(--slate-700);
+}
+
+.ledger-x {
+  border: 0;
+  background: transparent;
+  color: var(--slate-400);
+  cursor: pointer;
+  font-size: 0.8rem;
+  padding: 0.1rem 0.3rem;
+  border-radius: 50%;
+  transition: all 0.15s ease;
+}
+
+.ledger-x:hover {
+  color: #b91c1c;
+  background: var(--danger-soft);
+}
+
+.ledger-row-head {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.ledger-ops {
+  display: inline-flex;
+  gap: 0.2rem;
+}
+
+.ledger-op {
+  border: 1px solid var(--slate-200);
+  background: #ffffff;
+  color: var(--slate-600);
+  border-radius: 0.45rem;
+  width: 1.35rem;
+  height: 1.35rem;
+  font-size: 0.68rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.15s ease;
+}
+
+.ledger-op:hover {
+  color: var(--primary);
+  border-color: var(--primary);
+  background: var(--primary-soft);
+}
+
+.ledger-bar {
+  height: 5px;
+  background: var(--slate-100);
+  border-radius: 99px;
+  margin-top: 0.3rem;
+  overflow: hidden;
+}
+
+.ledger-bar i {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, #fbbf24, #f97316);
+  border-radius: 99px;
+  transition: width 0.35s ease;
+}
+
+.ledger-sub {
+  font-size: 0.7rem;
+  color: var(--slate-500);
+  margin-top: 0.2rem;
+}
+
+.ledger-empty {
+  font-size: 0.78rem;
+  color: var(--slate-400);
+  line-height: 1.5;
+  background: var(--slate-50);
+  border: 1.5px dashed var(--slate-200);
+  border-radius: 0.6rem;
+  padding: 0.6rem 0.7rem;
+  display: flex;
+  gap: 0.4rem;
+  align-items: flex-start;
+}
+
+.ledger-empty i {
+  margin-top: 0.15rem;
+  color: var(--slate-300);
+}
+
+/* ---------- 收藏 / 烹饪记录：两列方块（tile）+ 分页 ---------- */
+.ledger-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.45rem;
+}
+
+.fav-tile {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  min-width: 0;
+  background: #fff7ef;
+  border: 1px solid #fde3c8;
+  border-radius: 0.6rem;
+  padding: 0.35rem 0.5rem 0.35rem 0.6rem;
+}
+
+.fav-tile-star {
+  color: #f59e0b;
+  font-size: 0.72rem;
+  flex: 0 0 auto;
+}
+
+.fav-tile-name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #7c2d12;
+}
+
+.fav-tile .ledger-x {
+  flex: 0 0 auto;
+  font-size: 0.72rem;
+}
+
+.cook-tile {
+  min-width: 0;
+  background: #ffffff;
+  border: 1px solid var(--card-border);
+  border-radius: 0.6rem;
+  padding: 0.4rem 0.5rem 0.35rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.cook-tile-head {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.cook-tile-name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: var(--slate-800);
+}
+
+.cook-tile-times {
+  flex: 0 0 auto;
+  font-size: 0.68rem;
+  font-weight: 800;
+  color: #b45309;
+  background: var(--amber-soft);
+  border-radius: 99px;
+  padding: 0.02rem 0.4rem;
+}
+
+.cook-tile-bar {
+  height: 4px;
+  background: var(--slate-100);
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.cook-tile-bar i {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, #fbbf24, #f97316);
+  border-radius: 99px;
+}
+
+.cook-tile-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.3rem;
+}
+
+.cook-tile-last {
+  font-size: 0.62rem;
+  color: var(--slate-400);
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cook-tile-ops {
+  display: inline-flex;
+  gap: 0.2rem;
+  flex: 0 0 auto;
+}
+
+.ledger-pager {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  margin-top: 0.4rem;
+}
+
+.lp-btn {
+  border: 1px solid var(--slate-200);
+  background: #ffffff;
+  color: var(--slate-600);
+  border-radius: 0.45rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  font-size: 0.7rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.15s ease;
+}
+
+.lp-btn:hover:not(:disabled) {
+  color: var(--primary);
+  border-color: var(--primary);
+  background: var(--primary-soft);
+}
+
+.lp-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.lp-info {
+  font-size: 0.72rem;
+  color: var(--slate-500);
+  font-weight: 700;
+}
+
+/* 卡片上的账本操作行 */
+.ledger-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  border-top: 1px dashed var(--slate-200);
+  padding-top: 0.5rem;
+}
+
+.ledger-actions .btn {
+  font-size: 0.78rem;
+  padding: 0.22rem 0.6rem;
+}
+
+.ledger-actions .cook-note {
+  color: var(--slate-500);
+  font-size: 0.74rem;
+}
+
+/* 账本收藏星标激活态 */
+.ledger-fav.btn-warning {
+  border-color: #fcd34d;
+  color: #78350f;
+}
+
+/* 账本面板不再吸顶（否则会盖住下方“每日推荐”），随页面自然滚动 */
+@media (min-width: 992px) {
+  .ledger-panel {
+    position: static;
+    max-height: none;
+  }
+  .ledger-body {
+    overflow: visible;
+    padding: 0.85rem 0.9rem 0.9rem;
+  }
+}
+
+/* ============================================================
+   13. 宽屏利用 + 适度放松 + 每日菜谱推荐
+   ============================================================ */
+.app-container {
+  max-width: 1720px;
+}
+
+/* 宽屏下放宽一点间距，别那么“挤” */
+@media (min-width: 992px) {
+  .filter-body {
+    padding: 0.9rem 1rem 0.5rem;
+  }
+  .chip-grid .chip,
+  #cookwareBox .chip {
+    font-size: 0.84rem;
+    padding: 0.36rem 0.3rem;
+  }
+  .chip-grid,
+  #cookwareBox {
+    gap: 0.38rem 0.45rem;
+  }
+  .filter-block-cat .filter-title {
+    font-size: 0.84rem;
+  }
+  .request-card {
+    padding: 1rem 1.25rem 0.85rem;
+  }
+  .ledger-actions .btn {
+    padding: 0.3rem 0.7rem;
+  }
+}
+
+/* ---------- 每日菜谱推荐面板 ---------- */
+.daily-body {
+  padding: 1rem 1.1rem 1.1rem;
+}
+
+.daily-desc {
+  font-size: 0.8rem;
+  color: var(--slate-500);
+  margin-bottom: 0.75rem;
+  line-height: 1.55;
+}
+
+.daily-result {
+  margin-top: 0.95rem;
+}
+
+.daily-loading {
+  font-size: 0.85rem;
+  color: var(--slate-500);
+  background: var(--slate-50);
+  border: 1.5px dashed var(--slate-200);
+  border-radius: var(--radius-sm);
+  padding: 0.9rem 0.8rem;
+  text-align: center;
+  line-height: 1.6;
+}
+
+.daily-loading i {
+  color: var(--primary);
+  margin-right: 0.3rem;
+}
+
+.daily-error {
+  font-size: 0.8rem;
+  color: #b91c1c;
+  background: var(--danger-soft);
+  border: 1px solid #fecaca;
+  border-radius: var(--radius-sm);
+  padding: 0.7rem 0.8rem;
+  text-align: left;
+  line-height: 1.6;
+}
+
+.daily-error span {
+  color: var(--slate-500);
+}
+
+.daily-meta {
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: var(--slate-500);
+  margin-bottom: 0.35rem;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.daily-meta i {
+  color: var(--teal);
+}
+
+.daily-summary {
+  background: linear-gradient(135deg, #ecfdf5, #f0fdfa);
+  border: 1px solid #a7f3d0;
+  border-radius: 0.6rem;
+  padding: 0.5rem 0.7rem;
+  font-size: 0.84rem;
+  color: #065f46;
+  margin-bottom: 0.6rem;
+  font-weight: 600;
+  line-height: 1.55;
+}
+
+.daily-item {
+  border: 1px solid var(--card-border);
+  border-radius: 0.7rem;
+  padding: 0.6rem 0.7rem;
+  margin-bottom: 0.55rem;
+  background: #ffffff;
+}
+
+.daily-item-head {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.daily-meal {
+  background: linear-gradient(135deg, var(--primary), var(--teal));
+  color: #ffffff;
+  font-size: 0.68rem;
+  font-weight: 800;
+  border-radius: 999px;
+  padding: 0.1rem 0.55rem;
+  letter-spacing: 0.5px;
+}
+
+.daily-item-head b {
+  font-size: 0.92rem;
+  color: var(--slate-900);
+}
+
+.daily-min {
+  margin-left: auto;
+  font-size: 0.72rem;
+  color: var(--slate-500);
+  background: var(--slate-100);
+  padding: 0.12rem 0.55rem;
+  border-radius: 99px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.daily-why {
+  font-size: 0.78rem;
+  color: var(--slate-600);
+  margin-top: 0.35rem;
+  line-height: 1.55;
+}
+
+.daily-why i {
+  color: var(--primary);
+  margin-right: 0.25rem;
+}
+
+.daily-how {
+  font-size: 0.78rem;
+  color: var(--slate-500);
+  margin-top: 0.3rem;
+  line-height: 1.55;
+  background: #fafcfb;
+  border-radius: 0.45rem;
+  padding: 0.35rem 0.55rem;
+}
+
+.daily-how i {
+  color: var(--amber);
+  margin-right: 0.25rem;
+}
+
+.daily-tip {
+  font-size: 0.7rem;
+  color: var(--slate-400);
+  margin-top: 0.5rem;
+  text-align: center;
+  line-height: 1.5;
+}
+
+/* ---------- 节日特供选择条 ---------- */
+.fest-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
+  margin-bottom: 0.65rem;
+}
+
+.fest-label {
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: var(--slate-600);
+  margin-right: 0.15rem;
+  white-space: nowrap;
+}
+
+.fest-label i {
+  color: var(--danger);
+  margin-right: 0.2rem;
+}
+
+.fest-chip {
+  border: 1.5px solid #f3d9c9;
+  background: #fff8f3;
+  color: #b45309;
+  border-radius: var(--radius-full);
+  padding: 0.2rem 0.7rem;
+  font-size: 0.76rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.16s ease;
+}
+
+.fest-chip:hover {
+  transform: translateY(-1px);
+  border-color: #fbbf24;
+}
+
+.fest-chip.on,
+.fest-chip.on:hover {
+  background: linear-gradient(135deg, #e11d48, #f97316);
+  border-color: transparent;
+  color: #ffffff;
+  box-shadow: 0 4px 10px -2px rgba(225, 29, 72, 0.35);
+  transform: none;
+}
+
+/* ============================================================
+   14. 悬浮按钮 + 弹出面板（菜谱账本 / 每日菜谱推荐）
+   ============================================================ */
+body {
+  /* 给右下角悬浮按钮留出底部空间，避免盖住内容 */
+  padding-bottom: 64px;
+}
+
+.dock-area {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 1070;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.dock-btns {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: flex-end;
+}
+
+.dock-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  background: #ffffff;
+  border: 1px solid var(--card-border);
+  color: var(--slate-800);
+  font-weight: 800;
+  font-size: 0.88rem;
+  font-family: inherit;
+  padding: 0.55rem 0.95rem 0.55rem 0.75rem;
+  border-radius: 999px;
+  box-shadow: 0 12px 28px -10px rgba(15, 23, 42, 0.32);
+  cursor: pointer;
+  position: relative;
+  transition: transform 0.16s ease, box-shadow 0.16s ease;
+}
+
+.dock-btn i {
+  color: var(--teal);
+  font-size: 1rem;
+}
+
+.dock-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 32px -10px rgba(6, 95, 70, 0.35);
+}
+
+.dock-btn-daily {
+  background: linear-gradient(135deg, var(--primary), var(--teal));
+  border: none;
+  color: #ffffff;
+  box-shadow: 0 12px 28px -8px rgba(6, 95, 70, 0.45);
+}
+
+.dock-btn-daily i {
+  color: #ffffff;
+}
+
+.dock-badge {
+  display: none;
+  position: absolute;
+  top: -6px;
+  right: -4px;
+  min-width: 1.15rem;
+  height: 1.15rem;
+  padding: 0 0.3rem;
+  border-radius: 999px;
+  background: #ef4444;
+  color: #ffffff;
+  font-size: 0.68rem;
+  font-weight: 800;
+  align-items: center;
+  justify-content: center;
+}
+
+.dock-label {
+  line-height: 1;
+}
+
+/* 弹出面板 */
+.float-panel {
+  display: none;
+  position: fixed;
+  right: 16px;
+  bottom: 106px;
+  width: min(400px, calc(100vw - 24px));
+  max-height: min(66vh, 620px);
+  background: #ffffff;
+  border: 1px solid var(--card-border);
+  border-radius: 1rem;
+  box-shadow: 0 26px 64px -18px rgba(15, 23, 42, 0.4);
+  flex-direction: column;
+  overflow: hidden;
+  transform-origin: right bottom;
+  animation: dockIn 0.22s var(--ease-smooth);
+}
+
+.float-panel.open {
+  display: flex;
+}
+
+@keyframes dockIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.float-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.7rem 0.95rem;
+  background: linear-gradient(135deg, #f0fdf4, #f0fdfa);
+  border-bottom: 1px solid var(--card-border);
+  flex: 0 0 auto;
+}
+
+.float-title {
+  font-weight: 800;
+  font-size: 0.98rem;
+  color: var(--slate-900);
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.float-title i {
+  color: var(--primary);
+}
+
+.float-head-right {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.float-close {
+  border: 1px solid var(--slate-200);
+  background: #ffffff;
+  color: var(--slate-500);
+  width: 1.7rem;
+  height: 1.7rem;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 0.8rem;
+  transition: all 0.15s ease;
+}
+
+.float-close:hover {
+  background: var(--slate-100);
+  color: var(--slate-900);
+}
+
+.float-body {
+  overflow-y: auto;
+  padding: 0.85rem 0.95rem 1rem;
+  scrollbar-gutter: stable;
+  min-height: 0;
+}
+
+.float-body::-webkit-scrollbar {
+  width: 6px;
+}
+
+/* ---- 收藏方块：✕ 悬停才出现，避免常驻误触 ---- */
+.fav-tile {
+  cursor: default;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.fav-tile .ledger-x {
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.fav-tile:hover .ledger-x,
+.fav-tile:focus-within .ledger-x {
+  opacity: 1;
+}
+
+.fav-tile:hover {
+  border-color: #fcd34d;
+  box-shadow: var(--shadow-xs);
+}
+
+/* ---- 烹饪方块：点整块=再记一次，悬停出现 −1 撤销 ---- */
+.cook-tile {
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.cook-tile:hover {
+  transform: translateY(-1px);
+  border-color: #a7f3d0;
+  box-shadow: var(--shadow-sm);
+}
+
+.cook-tile:active {
+  transform: scale(0.98);
+}
+
+.cook-dec {
+  opacity: 0;
+  flex: 0 0 auto;
+  transition: opacity 0.15s ease;
+}
+
+.cook-tile:hover .cook-dec {
+  opacity: 1;
+}
+
+/* 触屏设备没有 hover：直接显示辅助按钮，保证可用 */
+@media (hover: none) {
+  .fav-tile .ledger-x,
+  .cook-dec {
+    opacity: 1;
+  }
+}
+
+/* ============================================================
+   15. 细节美化 & 可访问性
+   ============================================================ */
+/* 键盘焦点环：全站交互元素统一 */
+:focus-visible {
+  outline: 3px solid rgba(16, 185, 129, 0.5);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+.chip:focus-visible,
+.res-tab:focus-visible,
+.pg-btn:focus-visible,
+.example-chip:focus-visible,
+.dock-btn:focus-visible,
+.fest-chip:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.4);
+}
+
+/* 尊重“减少动态效果”系统偏好 */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* 卡片内边距与宽屏排版呼吸感 */
+.recipe-card .card-body {
+  padding: 1.05rem 1.1rem;
+}
+
+.recipe-card {
+  border-radius: var(--radius-lg);
+}
+
+.recipe-name {
+  font-size: 1.08rem;
+}
+
+.recipe-desc {
+  font-size: 0.86rem;
+}
+
+/* 结果区工具栏在宽屏下更舒展 */
+.res-toolbar {
+  gap: 0.8rem 1rem;
+}
+
+.res-tab {
+  padding: 0.3rem 0.95rem;
+}
+
+/* 徽章/进度条圆润统一 */
+.match-badge {
+  border-radius: var(--radius-full);
+}
+
+.match-progress .progress-bar {
+  background-image: linear-gradient(90deg, #34d399, #0ea472, #0d9488) !important;
+}
+
+/* 统计条轻微玻璃感 */
+.stat-pill {
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+/* 弱相关/AI 分区标题更清晰 */
+.weak-zone .weak-title {
+  font-size: 1rem;
+}
+
+/* 悬浮面板头部与整体更精致 */
+.float-panel {
+  border: 1px solid rgba(14, 164, 114, 0.18);
+}
+
+.float-head {
+  border-bottom: 1px solid rgba(14, 164, 114, 0.15);
+}
+
+/* 让 8 张一页在 xxl 宽屏呈 4×2 整齐网格 */
+#resultGrid .col-xxl-3 {
+  display: flex;
+}
+
+#resultGrid .col-xxl-3 .recipe-card,
+#resultGrid .col-xxl-3 .card {
+  width: 100%;
+}
+
+/* ============================================================
+   16. 菜谱账本 · 记事本纸张风格（纯 CSS，无素材依赖）
+   ============================================================ */
+#ledgerFloat .float-body {
+  /* 泛黄信纸底 */
+  background-color: #fdfaf1;
+  /* 每 25px 一条淡蓝横格线 */
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0 24px,
+    rgba(59, 130, 246, 0.14) 24px 25px
+  );
+}
+
+/* 顶部固定边（笔记本线格只出现在内容区，表头保持清爽） */
+#ledgerFloat .float-head {
+  background: linear-gradient(135deg, #fdf6e3, #faf0dc);
+  border-bottom: 1px solid rgba(120, 113, 108, 0.15);
+}
+
+#ledgerFloat .float-title {
+  font-family: Georgia, "Times New Roman", "KaiTi", "STKaiti", serif;
+  letter-spacing: 0.5px;
+}
+
+/* 收藏/记录方块 → 贴在本子上的“便签条” */
+#ledgerFloat .fav-tile,
+#ledgerFloat .cook-tile {
+  background: #fffdf6;
+  border: 1px solid rgba(120, 113, 108, 0.16);
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.06),
+    0 4px 10px -3px rgba(87, 83, 78, 0.18);
+  backdrop-filter: none;
+}
+
+/* 便签微微歪斜，像随手贴的 */
+#ledgerFloat .fav-tile:nth-child(odd),
+#ledgerFloat .cook-tile:nth-child(odd) {
+  transform: rotate(-0.7deg);
+}
+
+#ledgerFloat .fav-tile:nth-child(even),
+#ledgerFloat .cook-tile:nth-child(even) {
+  transform: rotate(0.8deg);
+}
+
+#ledgerFloat .fav-tile:hover,
+#ledgerFloat .cook-tile:hover {
+  transform: translateY(-1px) rotate(0deg);
+  border-color: rgba(180, 130, 60, 0.4);
+}
+
+/* 便签条顶部的小“胶带” */
+#ledgerFloat .fav-tile::before,
+#ledgerFloat .cook-tile::before {
+  content: "";
+  position: absolute;
+  top: -5px;
+  left: 50%;
+  width: 36px;
+  height: 10px;
+  margin-left: -18px;
+  background: rgba(250, 204, 21, 0.35);
+  border: 1px solid rgba(202, 138, 4, 0.18);
+  border-radius: 2px;
+  transform: rotate(-2deg);
+  pointer-events: none;
+}
+
+#ledgerFloat .fav-tile,
+#ledgerFloat .cook-tile {
+  position: relative;
+}
+
+/* 便签纸上的字色也偏“墨水感” */
+#ledgerFloat .fav-tile-name {
+  color: #7a3e12;
+}
+
+#ledgerFloat .cook-tile-name {
+  color: #5b4636;
+}
+
+/* 记账的“×次数”像手写圈注 */
+#ledgerFloat .cook-tile-times {
+  background: rgba(250, 204, 21, 0.25);
+  color: #9a6b12;
+}
+
+/* 分页条与标题不压线 */
+#ledgerFloat .ledger-pager {
+  background: transparent;
+}
+
+#ledgerFloat .ledger-title {
+  color: #6b4a2f;
+}
+
+/* ============================================================
+   17. 全局去“素”：色彩、光斑与质感细节
+   ============================================================ */
+
+/* ---- Hero 星光点缀 ---- */
+.hero-spark {
+  position: absolute;
+  color: rgba(255, 255, 255, 0.6);
+  text-shadow: 0 0 12px rgba(255, 255, 255, 0.55);
+  font-size: 1rem;
+  pointer-events: none;
+  animation: twinkle 3s ease-in-out infinite;
+}
+
+.hs-1 {
+  top: 20%;
+  left: 24%;
+}
+.hs-2 {
+  top: 28%;
+  right: 22%;
+  font-size: 0.8rem;
+  animation-delay: -0.8s;
+}
+.hs-3 {
+  bottom: 22%;
+  left: 17%;
+  font-size: 1.1rem;
+  animation-delay: -1.6s;
+}
+.hs-4 {
+  top: 62%;
+  right: 9%;
+  font-size: 0.7rem;
+  animation-delay: -2.3s;
+}
+
+@keyframes twinkle {
+  0%, 100% {
+    opacity: 0.35;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.35);
+  }
+}
+
+/* ---- 需求输入卡：顶部彩带 ---- */
+.request-card {
+  overflow: visible;
+}
+
+.request-card::before {
+  content: "";
+  position: absolute;
+  top: -5px;
+  left: 22%;
+  right: 22%;
+  height: 7px;
+  border-radius: 99px;
+  background: linear-gradient(90deg, #34d399, #0d9488, #38bdf8, #fbbf24);
+  filter: drop-shadow(0 2px 5px rgba(16, 185, 129, 0.35));
+}
+
+/* ---- 示例需求 chips 各自带浅色（不再一片惨白）---- */
+.example-chip:nth-child(1) {
+  border-color: #bbf7d0;
+  background: #f0fdf4;
+}
+.example-chip:nth-child(2) {
+  border-color: #fde68a;
+  background: #fffbeb;
+}
+.example-chip:nth-child(3) {
+  border-color: #bae6fd;
+  background: #f0f9ff;
+}
+.example-chip:nth-child(4) {
+  border-color: #fbcfe8;
+  background: #fdf2f8;
+}
+.example-chip:nth-child(5) {
+  border-color: #e9d5ff;
+  background: #faf5ff;
+}
+
+/* ---- 统计条：渐变药丸 ---- */
+.stat-pill {
+  background: linear-gradient(180deg, #ffffff, #f8fafc);
+  border-color: var(--slate-200);
+}
+
+.stat-pill b {
+  font-size: 0.95rem;
+}
+
+.stat-pill-accent {
+  background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+  border-color: #a7f3d0;
+  box-shadow: 0 4px 12px -4px rgba(16, 185, 129, 0.35);
+}
+
+.stat-pill-warn {
+  background: linear-gradient(135deg, #fef2f2, #fee2e2);
+  border-color: #fecaca;
+  box-shadow: 0 4px 12px -4px rgba(239, 68, 68, 0.25);
+}
+
+.stat-pill-time {
+  background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+  border-color: #bae6fd;
+  box-shadow: 0 4px 12px -4px rgba(2, 132, 199, 0.22);
+}
+
+.stat-pill-weak {
+  background: linear-gradient(180deg, #f8fafc, #f1f5f9);
+}
+
+/* ---- 左侧筛选：分组成小卡片 + 图标色块 ---- */
+.filter-body > .filter-block {
+  background: linear-gradient(180deg, #ffffff, #f6fbf8);
+  border: 1px solid var(--card-border);
+  border-radius: 0.9rem;
+  padding: 0.7rem 0.8rem;
+  box-shadow: var(--shadow-xs);
+  margin-bottom: 0.85rem;
+}
+
+.filter-title i {
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 0.45rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.78rem;
+}
+
+.filter-title i.text-success {
+  background: var(--primary-soft);
+}
+
+.filter-title i.text-danger {
+  background: var(--danger-soft);
+}
+
+#resetBtn {
+  border: 1.5px solid #a7f3d0;
+  background: #ffffff;
+  color: #047857;
+  font-weight: 800;
+}
+
+#resetBtn:hover {
+  background: linear-gradient(135deg, var(--primary), var(--teal));
+  border-color: transparent;
+  color: #ffffff;
+  box-shadow: 0 6px 14px -4px var(--primary-glow);
+}
+
+/* 口味数值泡泡 */
+.flavor-value {
+  width: auto;
+  min-width: 1.6rem;
+  text-align: center;
+  background: var(--primary-soft);
+  border-radius: 0.4rem;
+  padding: 0.05rem 0.25rem;
+  color: var(--primary-hover);
+}
+
+.form-check-label:hover {
+  color: #b91c1c;
+}
+
+/* ---- 菜谱卡：彩色顶条 + 图标色块 + 细腻卡片底 ---- */
+.recipe-card {
+  background: linear-gradient(180deg, #ffffff, #f4fbf7);
+}
+
+.recipe-card-weak {
+  background: #f8fafc;
+}
+
+.recipe-card .recipe-name i {
+  width: 1.7rem;
+  height: 1.7rem;
+  border-radius: 0.55rem;
+  background: var(--primary-soft);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  flex: 0 0 auto;
+}
+
+.recipe-card-weak .recipe-name i {
+  background: var(--slate-100);
+}
+
+.recipe-card.c-web .recipe-name i {
+  background: #eef2ff;
+}
+
+/* 分类彩色顶条（常显 50%，悬停全亮） */
+.recipe-card:not(.recipe-card-weak)::before {
+  opacity: 0.55;
+}
+
+.recipe-card:hover::before {
+  opacity: 1;
+}
+
+.recipe-card.c-meat::before {
+  background: linear-gradient(90deg, #f87171, #fb923c, #fbbf24);
+}
+.recipe-card.c-roast::before {
+  background: linear-gradient(90deg, #fb923c, #f59e0b, #fcd34d);
+}
+.recipe-card.c-soup::before {
+  background: linear-gradient(90deg, #38bdf8, #0ea5e9, #14b8a6);
+}
+.recipe-card.c-steam::before {
+  background: linear-gradient(90deg, #2dd4bf, #14b8a6, #a7f3d0);
+}
+.recipe-card.c-salad::before {
+  background: linear-gradient(90deg, #4ade80, #22c55e, #86efac);
+}
+.recipe-card.c-staple::before {
+  background: linear-gradient(90deg, #fbbf24, #f59e0b, #d97706);
+}
+.recipe-card.c-veg::before {
+  background: linear-gradient(90deg, #a3e635, #84cc16, #65a30d);
+}
+.recipe-card.c-web::before {
+  background: linear-gradient(90deg, #c4b5fd, #8b5cf6, #6366f1);
+}
+
+.recipe-card-weak::before {
+  background: #cbd5e1;
+  opacity: 0.3;
+}
+
+.recipe-card-weak:hover::before {
+  opacity: 0.7;
+}
+
+/* 名称行与按钮更多色彩 */
+.recipe-name {
+  color: #14532d;
+}
+
+.recipe-name b {
+  font-weight: inherit;
+}
+
+.btn-success,
+.btn-success:focus {
+  background-image: linear-gradient(135deg, var(--primary), var(--teal));
+  border: none;
+  box-shadow: 0 8px 18px -6px rgba(16, 185, 129, 0.5);
+  font-weight: 700;
+}
+
+.btn-success:hover {
+  background-image: linear-gradient(135deg, #047857, #0f766e);
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+/* 分区块标题略加一点仪式感 */
+.weak-zone .weak-title i {
+  background: var(--primary-soft);
+  border-radius: 0.5rem;
+  width: 1.8rem;
+  height: 1.8rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ============================================================
+   18. 记事本主题全站（深色书桌 + 纸张便签）
+   ============================================================ */
+body {
+  /* 浅色木板：双色板条 + 板缝 + 细木纹 + 上下自然光影 */
+  background-color: #dcc198;
+  background-image:
+    /* 板条底色交替（200px 一块） */
+    repeating-linear-gradient(90deg, #ddc299 0 200px, #d5b687 200px 400px),
+    /* 板缝（深一点的细线） */
+    repeating-linear-gradient(90deg, transparent 0 198px, rgba(110, 80, 42, 0.20) 198px 202px, transparent 202px 400px),
+    /* 木纹细线（两种频率叠加，避免死板） */
+    repeating-linear-gradient(0deg, rgba(110, 80, 42, 0.05) 0 2px, transparent 2px 7px),
+    repeating-linear-gradient(0deg, rgba(255, 252, 240, 0.06) 0 1px, transparent 1px 4px),
+    repeating-linear-gradient(90deg, rgba(255, 252, 240, 0.03) 0 1px, transparent 1px 3px),
+    /* 顶部柔光 + 底部轻暗角 */
+    radial-gradient(1400px 700px at 50% -180px, rgba(255, 255, 255, 0.35), transparent 60%),
+    radial-gradient(1500px 800px at 50% 115%, rgba(96, 68, 34, 0.12), transparent 55%);
+  background-attachment: fixed;
+  color: #3c2e1b;
+}
+
+::selection {
+  background: rgba(245, 158, 11, 0.3);
+}
+
+/* 木纹底上要用深棕字，不能再用浅沙色 */
+.footer-note {
+  color: #7d6740;
+}
+
+.footer-heart {
+  color: #d97706;
+}
+
+/* ---- Hero：暗色皮质封面，暖金字 ---- */
+.hero {
+  background:
+    radial-gradient(700px 320px at 20% 0%, rgba(255, 226, 150, 0.12), transparent 60%),
+    linear-gradient(135deg, #1d3a2e 0%, #15352b 55%, #3b2c1b 130%);
+  color: #f6ecd4;
+  box-shadow: 0 22px 60px -20px rgba(0, 0, 0, 0.65);
+}
+
+.hero-title {
+  text-shadow: 0 3px 14px rgba(0, 0, 0, 0.45);
+}
+
+.hero-title i {
+  color: #ffd97a;
+}
+
+.hero-sub {
+  color: #eadfc2;
+}
+
+.hero-pill {
+  background: rgba(255, 236, 190, 0.14);
+  border-color: rgba(255, 236, 190, 0.32);
+  color: #f2e6c8;
+}
+
+.hero-spark {
+  color: rgba(255, 226, 150, 0.7);
+  text-shadow: 0 0 12px rgba(255, 226, 150, 0.5);
+}
+
+.deco {
+  color: rgba(255, 226, 150, 0.28);
+}
+
+/* ---- 主要面板 → 纸张 ---- */
+.request-card,
+.filter-panel,
+.summary-card,
+.weak-zone,
+.empty-state,
+.float-panel {
+  background: linear-gradient(180deg, #fdfaf0, #f5edd9);
+  border-color: #cdbb90;
+  color: #3c2e1b;
+}
+
+.weak-zone {
+  background: rgba(253, 250, 240, 0.92);
+}
+
+.filter-panel .filter-head,
+.float-head {
+  background: linear-gradient(135deg, #f6ecd4, #efe2c4);
+  border-bottom-color: rgba(120, 95, 55, 0.18);
+}
+
+.filter-head {
+  color: #46351f;
+}
+
+.filter-head .badge {
+  background: rgba(139, 107, 60, 0.16) !important;
+  color: #5d441f !important;
+}
+
+.ledger-num {
+  background: rgba(139, 107, 60, 0.14);
+  color: #6b5228;
+}
+
+.filter-body > .filter-block {
+  background: rgba(255, 252, 242, 0.85);
+  border-color: #e0d2ae;
+  box-shadow: none;
+}
+
+.filter-title {
+  color: #57421f;
+  border-bottom-color: #e0d2ae;
+}
+
+.custom-block {
+  background: rgba(255, 250, 235, 0.8);
+  border-color: #d9c08e;
+}
+
+/* ---- 表单与 chips 的笔墨色 ---- */
+.request-input-group .form-control,
+#customInput {
+  background: #fffdf4;
+  border-color: #d3c092;
+  color: #3c2e1b;
+}
+
+.request-input-group .form-control:focus,
+#customInput:focus {
+  background: #ffffff;
+  border-color: #c98f2d;
+  box-shadow: 0 0 0 0.2rem rgba(217, 119, 6, 0.18);
+}
+
+.chip,
+.example-chip,
+.res-tab,
+.pg-btn,
+.fest-chip {
+  background: #fffdf4;
+  border-color: #cdbb90;
+  color: #5a4626;
+}
+
+.chip:hover {
+  background: #f6ead0;
+  border-color: #b58a4a;
+}
+
+.chip-active,
+.chip-active:hover,
+.res-tab.tab-on,
+.res-tab.tab-on:hover,
+.pg-btn.pg-on,
+.pg-btn.pg-on:hover {
+  background: linear-gradient(135deg, #9a7434, #6f5424) !important;
+  border-color: transparent !important;
+  color: #fff7e2 !important;
+  box-shadow: 0 5px 14px -4px rgba(120, 84, 26, 0.5) !important;
+}
+
+.example-chip:nth-child(n) {
+  border-style: solid;
+  background: #fffaf0;
+}
+
+.request-input-group .btn,
+.btn-success {
+  background-image: linear-gradient(135deg, #eda93e, #dd7f22) !important;
+  border-color: transparent !important;
+  color: #4b2d08 !important;
+  box-shadow: 0 8px 18px -6px rgba(180, 110, 20, 0.55);
+}
+
+.btn-success:hover {
+  background-image: linear-gradient(135deg, #e0952c, #cf6f14) !important;
+}
+
+#resetBtn {
+  border-color: #c9a763;
+  background: #fffdf4;
+  color: #7a5b22;
+}
+
+#resetBtn:hover {
+  background: linear-gradient(135deg, #9a7434, #6f5424);
+  color: #fff7e2;
+}
+
+.flavor-row {
+  background: rgba(250, 244, 229, 0.7);
+}
+
+.flavor-row:hover {
+  background: #f5ead0;
+}
+
+.flavor-range {
+  accent-color: #d97706;
+}
+
+.flavor-value {
+  background: rgba(245, 176, 60, 0.18);
+  color: #a15c10;
+}
+
+.ledger-op,
+.lp-btn,
+.float-close {
+  background: #fffdf4;
+  border-color: #cdbb90;
+  color: #6b5228;
+}
+
+.form-check-label {
+  color: #5a4626;
+}
+
+.hint-text {
+  color: #a08a63;
+}
+
+.daily-desc {
+  color: #8a744f;
+}
+
+.daily-summary {
+  background: linear-gradient(135deg, #fdf3da, #fbebc6);
+  border-color: #e7c67f;
+  color: #7a5208;
+}
+
+.daily-item {
+  background: #fffdf4;
+  border-color: #e0d2ae;
+}
+
+.daily-item-head b {
+  color: #46351f;
+}
+
+/* ---- 菜谱 = 胶带贴上的便签 ---- */
+.recipe-card {
+  background: linear-gradient(180deg, #fffdf2, #f7f0dc);
+  border: 1px solid #d6c49a;
+  color: #3a2c18;
+  box-shadow:
+    0 2px 3px rgba(0, 0, 0, 0.28),
+    0 12px 22px -10px rgba(0, 0, 0, 0.6);
+}
+
+/* 分类 → 便签左侧彩色标记条 */
+.recipe-card.c-meat {
+  border-left: 5px solid #e2844b;
+}
+.recipe-card.c-roast {
+  border-left: 5px solid #e0a52e;
+}
+.recipe-card.c-soup {
+  border-left: 5px solid #5f9ec9;
+}
+.recipe-card.c-steam {
+  border-left: 5px solid #54b8a6;
+}
+.recipe-card.c-salad {
+  border-left: 5px solid #6fbf6e;
+}
+.recipe-card.c-staple {
+  border-left: 5px solid #d9a53a;
+}
+.recipe-card.c-veg {
+  border-left: 5px solid #9bb84a;
+}
+.recipe-card.c-web {
+  border-left: 5px solid #8f7cc0;
+}
+.recipe-card-weak {
+  background: #f4edda;
+  border-left: 5px solid #b9a888;
+  opacity: 0.9;
+}
+
+/* 胶带：便签顶部半透明纸胶带（替换掉原彩色顶条） */
+.recipe-card::before {
+  content: "";
+  position: absolute;
+  inset: auto;
+  top: -8px;
+  left: 50%;
+  width: 68px;
+  height: 16px;
+  margin-left: -34px;
+  background: rgba(248, 210, 110, 0.55);
+  border: 1px solid rgba(190, 150, 60, 0.35);
+  border-radius: 2px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
+  transform: rotate(-2deg);
+  opacity: 1;
+  pointer-events: none;
+}
+
+.recipe-card-weak::before {
+  background: rgba(210, 190, 150, 0.5);
+  border-color: rgba(160, 140, 100, 0.3);
+}
+
+.recipe-card:hover {
+  transform: translateY(-5px) rotate(0deg);
+  border-color: #c9a763;
+  box-shadow:
+    0 4px 6px rgba(0, 0, 0, 0.3),
+    0 22px 40px -14px rgba(0, 0, 0, 0.65);
+}
+
+.recipe-card .recipe-name i {
+  background: rgba(240, 196, 90, 0.22);
+}
+
+.recipe-name {
+  color: #4a3a1c;
+}
+
+.recipe-meta span {
+  background: #f3e9d2;
+  color: #6f5b36;
+}
+
+.recipe-desc {
+  color: #5d4b2c;
+}
+
+.tag {
+  background: #efe6d0;
+  color: #6b5637;
+}
+
+.tag-hit {
+  background: #e2f0cf;
+  color: #3f6b1e;
+  box-shadow: inset 0 0 0 1px #bfdda0;
+}
+
+.tag-warn {
+  background: #f9e3d8;
+  color: #a03c28;
+}
+
+.tag-seasoning {
+  background: transparent;
+  border-color: #cfbd92;
+  color: #8a744f;
+}
+
+.reason-line {
+  color: #8a744f;
+  border-top-color: #d9c9a4;
+}
+
+.steps-box {
+  background: #f8f1dd;
+  border-left-color: #c98f2d;
+  color: #4a3a1c;
+}
+
+.stat-pill {
+  background: linear-gradient(180deg, #fdfaf0, #f3ead4);
+  border-color: #d8c79f;
+  color: #7a6a50;
+}
+
+.stat-pill b {
+  color: #46351f;
+}
+
+.stat-pill-accent {
+  background: linear-gradient(135deg, #f8f0d8, #f0e2ba);
+  border-color: #e0c98e;
+  box-shadow: 0 4px 12px -4px rgba(139, 107, 60, 0.35);
+}
+
+.stat-pill-warn {
+  background: linear-gradient(135deg, #fbe9dd, #f6d8c8);
+  border-color: #e6bda6;
+}
+
+.stat-pill-time {
+  background: linear-gradient(135deg, #f0ede2, #e5e0cc);
+  border-color: #d6cfae;
+}
+
+.empty-state {
+  border-color: #d3c296;
+}
+
+.empty-state i {
+  color: #c9b98f !important;
+}
+
+.weak-title {
+  color: #5d4b2c;
+}
+
+.ledger-title {
+  color: #5d4725;
+}
+
+/* 便签歪斜（由 JS 按菜名加 note-l / note-r） */
+.note-l {
+  transform: rotate(-0.6deg);
+}
+
+.note-r {
+  transform: rotate(0.7deg);
+}
+
+.recipe-card:hover {
+  transform: translateY(-5px) rotate(0deg);
+}
+
+/* 纸张面板在浅木桌面的暖投影 */
+.request-card {
+  box-shadow:
+    0 28px 56px -18px rgba(92, 64, 30, 0.5),
+    0 6px 14px -8px rgba(92, 64, 30, 0.25);
+}
+
+.filter-panel,
+.float-panel,
+.summary-card,
+.empty-state {
+  box-shadow:
+    0 16px 36px -16px rgba(92, 64, 30, 0.42),
+    0 2px 6px -2px rgba(92, 64, 30, 0.2);
+}
+
+.weak-zone {
+  box-shadow: 0 10px 22px -14px rgba(92, 64, 30, 0.3);
+}
