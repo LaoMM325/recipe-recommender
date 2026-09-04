@@ -104,11 +104,11 @@ python tools/generate_recipes.py --rounds-limit 5   # 先试水
 - 不配 Tavily：AI 补菜只做库内补充并提示如何开启；
 - 前端 + 内置 26 道菜：后端不开也能打开页面（少联网功能）。
 
-## 分工建议（文件边界互不冲突）
+## 分工
 
-| 人 | 文件 | 事项 |
-|---|---|---|
-| 数据 | `tools/generate_recipes.py`、`backend/data/recipes.json` | 扩库、收录数据质量 |
-| 后端 | `backend/main.py`、`backend/llm.py` | 接口、检索、清洗、错误处理 |
-| Prompt | `backend/prompt.py` | 每日/节日/清洗提示词打磨 |
-| 前端 | `frontend/index.html`、`app.js`、`style.css` | UI 交互、卡片/账本展示 |
+| 开发者 | 职责 | 文件 | 事项 |
+|---|---|---|---|
+| LaoMM325 | 后端 | `backend/main.py`、`backend/llm.py` | 接口、检索、清洗、错误处理 |
+| liddell | 数据 | `tools/generate_recipes.py`、`backend/data/recipes.json` | 扩库、收录数据质量 |
+| yunfei3313 | 前端 | `frontend/index.html`、`app.js`、`style.css` | UI 交互、卡片/账本展示 |
+| caicaizio | Prompt | `backend/prompt.py` | 每日/节日/清洗提示词打磨 |
