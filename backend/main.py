@@ -297,6 +297,13 @@ _SOCIAL_HOSTS = {
 }
 # 下厨房（用户认可的高质量菜谱源）：库外检索第一优先只在这里搜
 XCF_DOMAINS = ["www.xiachufang.com", "m.xiachufang.com"]
+# 移动版→桌面版域名（路径一致可安全替换，避免 PC 打开移动站体验差）
+_MOBILE_TO_WEB = {
+    "m.xiachufang.com": "www.xiachufang.com",
+    "m.douguo.com": "www.douguo.com",
+    "m.xinshipu.com": "www.xinshipu.com",
+    "m.meishij.net": "www.meishij.net",
+}
 _WEB_TITLE_TAIL = re.compile(
     r"[-_|·\s]*(下厨房|豆果美食|心食谱|美食杰|香哈菜谱|网上厨房|搜狐|网易|百家号|知乎|"
     r"百度百科|百度知道|新浪|一点资讯|今日头条|菜谱大全|家常菜做法大全|视频教程)?\s*$"
@@ -460,6 +467,13 @@ def _web_to_recipe(res: dict, name_override: str | None = None, summary_override
         host = host or (urlparse(url).netloc or "网页")
     except Exception:  # noqa: BLE001
         host = host or "网页"
+
+    # 移动版 → 桌面版：m.xiachufang.com 等在 PC 浏览器打开体验差/可能打不开，
+    # 两者页面路径一致，把 host 与 URL 统一改写为桌面域名（www.…）
+    if host in _MOBILE_TO_WEB:
+        web_host = _MOBILE_TO_WEB[host]
+        url = url.replace(f"//{host}/", f"//{web_host}/") if f"//{host}/" in url else url
+        host = web_host
 
     # 简介优先级：Agnes 简介 > 干净正文 > 兜底文案（有垃圾正文绝不展示）
     if summary_override:
