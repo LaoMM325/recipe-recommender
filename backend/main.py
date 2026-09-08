@@ -663,21 +663,48 @@ def _season_now() -> str:
     return "冬"
 
 
+_WEATHER_CACHE: dict = {"at": 0.0, "text": ""}   # 简单缓存：30 分钟内不重复请求外部天气
+
+
 def _weather_now() -> str:
-    """用免费 wttr.in 拉当前天气（无需 key）；失败就返回空串由模型按季节兜底。"""
+    """用免费 wttr.in 拉当前天气（无需 key）。
+
+    完善点：
+    - 城市可在 .env 用 WEATHER_CITY 指定（如 昆明/Kunming），不填则按访问 IP 自动定位；
+    - lang=zh 让天气描述返回中文；
+    - 结果缓存 30 分钟，避免每次点“每日菜单”都请求外部；
+    - 失败/超时返回空串，由模型按季节兜底（不阻塞主流程）。
+    """
+    import time
+    from urllib.parse import quote
+
+    now = time.time()
+    if _WEATHER_CACHE["text"] and now - _WEATHER_CACHE["at"] < 1800:
+        return _WEATHER_CACHE["text"]
+
+    city = os.getenv("WEATHER_CITY", "").strip()
+    base = "https://wttr.in/"
+    url = (base + quote(city) + "?format=j1&lang=zh") if city else (base + "?format=j1&lang=zh")
+    text = ""
     try:
-        req = urllib.request.Request(
-            "https://wttr.in/?format=j1",
-            headers={"User-Agent": "Mozilla/5.0"},
-        )
+        req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
         with urllib.request.urlopen(req, timeout=6) as resp:
             data = json.loads(resp.read().decode("utf-8"))
         cc = data["current_condition"][0]
-        desc = cc["weatherDesc"][0]["value"]
+        desc = (cc.get("weatherDesc") or [{}])[0].get("value", "")
         temp = cc.get("temp_C", "—")
-        return f"{desc} {temp}°C"
-    except Exception:  # noqa: BLE001
-        return ""
+        humi = cc.get("humidity")
+        parts = [f"{desc} {temp}°C"]
+        if humi:
+            parts.append(f"湿度{humi}%")
+        text = " ".join(parts)
+        if not desc or not temp or temp == "—":
+            text = ""
+    except Exception:  # noqa: BLE001 —— 外部服务不可达时静默
+        text = ""
+    if text:
+        _WEATHER_CACHE["at"], _WEATHER_CACHE["text"] = now, text
+    return text
 
 
 @app.post("/api/daily")

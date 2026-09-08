@@ -73,6 +73,7 @@ start.bat
 | `LLM_MODEL` | 模型名，按你所用的服务填 | 同上（必填） |
 | `MOCK` | `1` 时所有 LLM 调用返回示例，不联网 | 可选 |
 | `TAVILY_API_KEY` | AI 补菜的"全网真实菜谱"检索 | 可选（不配则只做库内补充） |
+| `WEATHER_CITY` | 每日菜单的天气城市（如 `昆明`/`Kunming`），留空自动按 IP 定位 | 可选 |
 
 > 本项目当前演示默认：`LLM_BASE_URL=https://apihub.agnes-ai.com/v1`、`LLM_MODEL=agnes-2.5-flash`（可换 `agnes-2.5-pro`）。
 > 换别家（DeepSeek / OpenAI / Kimi / 通义等）只需改这三行，`.env.example` 里有对应注释。
