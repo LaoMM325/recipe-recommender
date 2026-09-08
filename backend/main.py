@@ -24,7 +24,7 @@ load_dotenv()  # 先加载 .env（llm.py 也自己加载一次，重复无副作
 # · 推荐 / 补菜 = 事实信息 → 只检索（菜谱库 + Tavily 全网真实菜谱），绝不“现编菜谱”；
 # · 每日菜谱推荐 = 搭配建议 → 可让大模型生成，但输出必须标注“AI 建议”，
 #   且前端为每道菜附“下厨房/B站”检索按钮，真实做法以检索结果为准。
-from llm import clean_titles, daily_plan
+from llm import clean_titles, daily_plan, fill_recipe
 
 app = FastAPI(title="食谱推荐后端")
 
@@ -205,9 +205,9 @@ def api_recipes():
 
 
 # ============================================================
-# 把“AI 全网检索到的好菜”收录进本地菜谱库（持久化到 recipes.json）
-# 收录时必须【真实抓取原网页】并解析出用料/步骤；解析不到就拒绝——
-# 绝不把只有摘要、没有步骤的空壳条目写进库里（货不对板）。
+# “加入菜谱库”：把 AI 检索到的好菜收录进本地库（持久化 recipes.json）
+# 收录 = Agnes 把【菜名/简介/来源】整理成完整标准菜谱（同 tools/generate_recipes.py 思路），
+# 产出完整用料/步骤再入库，绝不写空壳。
 # ============================================================
 class RecipeAddRequest(BaseModel):
     recipe: dict[str, object] = {}
@@ -224,43 +224,39 @@ def api_recipe_add(req: RecipeAddRequest):
     if not source_url.startswith("http"):
         raise HTTPException(status_code=422, detail="缺少可溯源的来源链接，无法收录")
 
-    # 1) 真实抓取 + 解析（用料/步骤以原网页为准，不接收前端上传的“空壳”数据）
-    parsed = _fetch_and_parse_recipe(source_url)
-    if not parsed:
-        raise HTTPException(
-            status_code=422,
-            detail="无法从该网页自动提取用料与步骤，未收录。"
-                   "（当前支持下厨房等带结构化数据的菜谱页；聚合/列表页不能收录）",
-        )
-    ingredients, steps = parsed["ingredients"], parsed["steps"]
-
-    # 2) 按菜名防重：已存在且是空壳(fromWeb 旧版无步骤) → 升级为完整条目
+    # 1) 防重：已存在且带步骤 → 直接返回
     existing = next((x for x in lib if str(x.get("name", "")) == name), None)
     if existing and existing.get("steps"):
         return {"ok": False, "message": f"「{name}」已在本地菜谱库中", "name": name}
 
-    flavor = {}
-    raw_flavor = r.get("flavor") if isinstance(r.get("flavor"), dict) else {}
-    for k in _FLAVOR_KEYS:
-        try:
-            flavor[k] = max(0, min(10, int(raw_flavor.get(k, 5))))
-        except (TypeError, ValueError):
-            flavor[k] = 5
-    avoid = [a for a in (r.get("avoid") or []) if a in AVOID_TAGS][:5]
+    # 2) 由 Agnes 把检索线索整理成完整标准菜谱（与 tools/generate_recipes.py 同思路，
+    #    不再尝试抓原网页；菜名/简介/来源只作线索，输出经过校验）
+    filled = fill_recipe(
+        {
+            "菜名": name,
+            "简介": str(r.get("desc") or ""),
+            "来源": str(r.get("sourceName") or ""),
+            "来源链接": source_url,
+        }
+    )
+    if not filled:
+        raise HTTPException(
+            status_code=422,
+            detail="AI 整理菜谱失败：请确认 backend/.env 已配置 LLM_API_KEY（Agnes），或稍后重试。",
+        )
 
     item = {
         "id": existing.get("id") if existing else max((int(x.get("id") or 0) for x in lib), default=0) + 1,
-        "name": name,
-        "desc": (str(r.get("desc") or "").strip()[:200]
-                 or f"收录自{str(r.get('sourceName') or '')}的真实菜谱，步骤见下方展开。"),
-        "time": None,  # 页面无精确用时字段则不编造，前端自动隐藏时间行
-        "difficulty": None,
-        "cookware": str(r.get("cookware") or ""),
-        "ingredients": ingredients,
-        "seasoning": "",
-        "flavor": flavor,
-        "avoid": avoid,
-        "steps": steps,
+        "name": filled["name"],
+        "desc": filled["desc"],
+        "time": filled["time"],
+        "difficulty": filled["difficulty"],
+        "cookware": filled["cookware"],
+        "ingredients": filled["ingredients"],
+        "seasoning": filled["seasoning"],
+        "flavor": filled["flavor"],
+        "avoid": filled["avoid"],
+        "steps": filled["steps"],
         "video": False,
         "sourceUrl": source_url,
         "sourceName": str(r.get("sourceName") or "")[:40],
@@ -510,99 +506,6 @@ def _web_to_recipe(res: dict, name_override: str | None = None, summary_override
         "sourceUrl": url,
         "sourceName": host,
     }
-
-
-# ============================================================
-# 收录前的“真实抓取”：打开原网页，从结构化数据(JSON-LD)里解析用料与步骤。
-# 解析不到就返回 None —— 宁可拒绝收录，也不存“货不对板”的空壳条目。
-# ============================================================
-_UA = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36"}
-
-
-def _clean_ingredients(raw: list) -> list[str]:
-    """把 JSON-LD 用料行清成“名称”，如 “嫩豆腐 1块” → 嫩豆腐；去重、限 12 条。"""
-    out: list[str] = []
-    for line in raw or []:
-        s = str(line).strip()
-        s = re.split(r"\s+|：|:", s, maxsplit=1)[0].strip()
-        s = s.strip("，,。.")
-        if not s or len(s) > 12 or s in ("辅料", "主料", "适量", "少许"):
-            continue
-        if s not in out:
-            out.append(s)
-        if len(out) >= 12:
-            break
-    return out
-
-
-def _clean_steps(raw: list) -> list[str]:
-    """把 JSON-LD 步骤清成纯文本数组。"""
-    out: list[str] = []
-    for item in raw or []:
-        if isinstance(item, dict):
-            txt = str(item.get("text") or item.get("name") or "").strip()
-        else:
-            txt = str(item).strip()
-        txt = re.sub(r"^\s*(步骤\s*\d+|Step\s*\d+|\d+[.、．)])\s*", "", txt).strip()
-        if len(txt) >= 4 and txt not in out:
-            out.append(txt)
-        if len(out) >= 8:
-            break
-    return out
-
-
-def _parse_recipe_html(html: str) -> dict | None:
-    """从网页 JSON-LD 里找一个 Recipe 对象，返回 {ingredients, steps}。"""
-    best = None
-    for m in re.finditer(r"<script[^>]*application/ld\+json[^>]*>(.*?)</script>", html, re.S):
-        try:
-            data = json.loads(m.group(1))
-        except Exception:  # noqa: BLE001
-            continue
-        nodes = data if isinstance(data, list) else (data.get("@graph") if isinstance(data, dict) else None) or [data]
-        if not isinstance(nodes, list):
-            continue
-        for n in nodes:
-            if isinstance(n, dict) and "Recipe" in str(n.get("@type")):
-                best = n
-                break
-        if best:
-            break
-    if not best:
-        return None
-    ings = _clean_ingredients(best.get("recipeIngredient") or [])
-    steps = _clean_steps(best.get("recipeInstructions") or [])
-    if not steps:
-        return None
-    return {"ingredients": ings, "steps": steps}
-
-
-def _fetch_and_parse_recipe(url: str) -> dict | None:
-    """抓取原网页并解析用料/步骤；网络失败/被反爬/解析失败都返回 None。
-
-    应对反爬抖动：m./www. 两个域名各试，重试两次，并要求页面足够大且含
-    application/ld+json 才算成功，避免把“访问频繁”挑战页当正文。
-    """
-    import time as _time
-
-    cands = []
-    for u in (url, url.replace("//m.", "//www.") if "//m." in url else url):
-        if u not in cands:
-            cands.append(u)
-    for u in cands:
-        for attempt in range(2):
-            try:
-                req = urllib.request.Request(u, headers=_UA)
-                with urllib.request.urlopen(req, timeout=12) as resp:
-                    html = resp.read(2 * 1024 * 1024).decode("utf-8", "ignore")
-                if len(html) > 8000 and "application/ld+json" in html:
-                    parsed = _parse_recipe_html(html)
-                    if parsed:
-                        return parsed
-            except Exception:  # noqa: BLE001
-                pass
-            _time.sleep(0.6)
-    return None
 
 
 def _web_recipes(req: SupplementRequest, need: int, exclude_names: set[str]) -> tuple[list[dict], str]:

@@ -4,11 +4,13 @@
 前端和 Prompt 同学都不需要关心这里。
 
 ⚠️ 使用说明（2026.9.3 更新）：
-本模块当前保留三个职责：
+本模块当前保留四个职责：
 1) recommend() / supplement() —— 因“防幻觉（只检索不生成）”已停用，main.py 不再调用；
 2) daily_plan() —— 【每日菜谱推荐】：搭配建议型生成，输出标注 AI 建议，前端附真实做法入口；
 3) clean_titles() —— 【搜索标题清洗】：把网页检索回的菜名类标题批量交给大模型提取干净菜名
    （正则只作离线兜底；本函数失败时 main.py 自动回落正则清洗）。
+4) fill_recipe() —— 【收录整理 / 加入菜谱库】：与 tools/generate_recipes.py 同思路，
+   由 Agnes 把网页检索到的菜整理成完整标准菜谱（无需抓原网页）。
 """
 import json
 import os
@@ -26,6 +28,7 @@ from prompt import (
     FLAVOR_KEYS,
     build_clean_titles_messages,
     build_daily_messages,
+    build_fill_recipe_messages,
     build_messages,
     build_supplement_messages,
 )
@@ -264,6 +267,96 @@ def clean_titles(items: list[dict]) -> dict[str, dict]:
             except Exception:  # noqa: BLE001 —— 失败静默，调用方回落正则
                 pass
     return clean_map
+
+
+def fill_recipe(seed: dict) -> dict | None:
+    """收录整理（“加入菜谱库”）：给定网页检索线索(菜名/简介/来源)，
+    由 Agnes 整理成完整标准菜谱，返回前端 schema 字段；失败返回 None。
+
+    与 tools/generate_recipes.py 同一套生成思路，只是单道生成、种子来自检索结果。
+    """
+    if os.getenv("MOCK") == "1":
+        name = str(seed.get("菜名") or "示例菜").strip()[:20]
+        return {
+            "name": name,
+            "desc": f"{name}：MOCK 整理的示例条目。",
+            "time": 20,
+            "difficulty": "简单",
+            "cookware": "炒锅",
+            "ingredients": ["鸡胸肉", "西兰花"],
+            "seasoning": "生抽 10ml、盐 2g、蒜末少许",
+            "flavor": {"salty": 5, "sweet": 0, "spicy": 2, "sour": 0, "umami": 5},
+            "avoid": [],
+            "steps": ["鸡胸肉切片腌制。", "西兰花焯水。", "热锅快炒调味出锅。"],
+        }
+
+    if not API_KEY:
+        return None
+
+    client = OpenAI(api_key=API_KEY, base_url=BASE_URL, timeout=60)
+    for _ in range(2):
+        try:
+            resp = client.chat.completions.create(
+                model=MODEL,
+                messages=build_fill_recipe_messages(seed),
+                temperature=0.4,
+                response_format={"type": "json_object"},
+            )
+            data = _extract_json(resp.choices[0].message.content)
+            if not isinstance(data, dict):
+                continue
+
+            name = str(data.get("菜名") or "").strip()[:24]
+            ingredients = [
+                str(i).strip().strip("克g毫升ml个")
+                for i in (data.get("食材") or [])
+                if str(i).strip()
+            ]
+            # 去重并去掉量词残留
+            seen, clean_ing = set(), []
+            for i in ingredients:
+                key = i
+                if 1 <= len(i) <= 12 and key not in seen:
+                    seen.add(key)
+                    clean_ing.append(i)
+            steps = [
+                re.sub(r"^\s*(步骤\s*\d+|\d+[.、．)])\s*", "", str(s).strip())
+                for s in (data.get("做法步骤") or [])
+                if str(s).strip()
+            ][:8]
+            if not name or len(clean_ing) < 2 or len(steps) < 2:
+                continue  # 缺关键字段 → 再试一次
+
+            flavor = {}
+            raw_f = data.get("口味") if isinstance(data.get("口味"), dict) else {}
+            for k in FLAVOR_KEYS:
+                try:
+                    flavor[k] = max(0, min(10, int(raw_f.get(k, 5))))
+                except (TypeError, ValueError):
+                    flavor[k] = 5
+            difficulty = str(data.get("难度") or "简单")
+            if difficulty not in DIFFICULTY_VOCAB:
+                difficulty = "简单"
+            cookware = str(data.get("厨具") or "")
+            if cookware not in COOKWARE_VOCAB:
+                cookware = ""  # 不在枚举里就不写，前端自动隐藏
+            avoid = [a for a in (data.get("忌口标签") or []) if a in AVOID_VOCAB][:5]
+
+            return {
+                "name": name,
+                "desc": str(data.get("简介") or seed.get("简介") or f"{name}，主料：{'、'.join(clean_ing[:4])}。")[:200],
+                "time": max(5, min(180, int(data.get("预计分钟") or 30))),
+                "difficulty": difficulty,
+                "cookware": cookware,
+                "ingredients": clean_ing[:10],
+                "seasoning": str(data.get("调料") or "")[:60],
+                "flavor": flavor,
+                "avoid": avoid,
+                "steps": steps,
+            }
+        except Exception:  # noqa: BLE001 —— 失败重试一次
+            continue
+    return None
 
 
 # ---- MOCK 示例数据：和真实模型返回的格式完全一致 ----
