@@ -1926,18 +1926,24 @@ document.addEventListener('DOMContentLoaded', () => {
         .then((data) => {
           if (data && data.ok) {
             addedLibNames.add(name);
-            // 立即并入本地库（含来源字段），无需刷新页面即可被检索命中
-            if (!serverRecipes || !serverRecipes.some((x) => x.name === name)) {
-              serverRecipes = [...(serverRecipes || []), { ...rec, id: -(3000 + aiSeq) }];
-            }
-            render();
-            alert(data.message || '已加入本地菜谱库');
-          } else {
-            const msg = (data && data.message) || '收录失败';
-            if (/已在/.test(msg)) addedLibNames.add(name);
-            alert(msg);
-            render();
+            // 收录成功：重新拉取后端库，拿到“带用料/步骤”的完整条目替换内存旧卡
+            return fetch(`${API_BASE}/api/recipes`)
+              .then((r) => r.json().catch(() => null))
+              .then((d) => {
+                if (d && Array.isArray(d.recipes) && d.recipes.length) {
+                  serverRecipes = d.recipes;
+                  addedLibNames = new Set(
+                    d.recipes.filter((x) => x.sourceUrl || x.fromWeb).map((x) => x.name)
+                  );
+                }
+                render();
+                alert(data.message || '已加入本地菜谱库');
+              });
           }
+          const msg = (data && (data.detail || data.message)) || '收录失败';
+          if (/已在/.test(msg)) addedLibNames.add(name);
+          alert(msg);
+          render();
         })
         .catch((err) => {
           alert('收录失败：' + err.message + '\n\n请确认后端已启动（start.bat）。');
