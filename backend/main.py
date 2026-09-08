@@ -637,8 +637,23 @@ _FESTIVAL_FOODS = {
 }
 
 
+def _china_now():
+    """北京时间优先；机器没装 tzdata 时回退到本机时间（本机即中国时区也一样）。"""
+    try:
+        from zoneinfo import ZoneInfo
+
+        return datetime.now(ZoneInfo("Asia/Shanghai"))
+    except Exception:  # noqa: BLE001 —— 无 tz 数据库等
+        return datetime.now()
+
+
+def _today_str() -> str:
+    """“每日菜单”的日期以北京/本地时间为准，不交给模型推算。"""
+    return _china_now().strftime("%Y-%m-%d")
+
+
 def _season_now() -> str:
-    m = datetime.now().month
+    m = _china_now().month
     if m in (3, 4, 5):
         return "春"
     if m in (6, 7, 8):
@@ -671,7 +686,9 @@ def api_daily(req: DailyRequest):
     输入：季节/天气(服务端取) + 口味账本画像 + 忌口/时间
     输出：{日期, 季节, 天气, 搭配说明, 推荐:[{餐次,菜名,适合原因,做法思路,用时分钟}]}
     """
+    today = _today_str()
     context = {
+        "当前日期": today,          # 服务器按北京/本地时间确定，模型不得自行推算
         "季节": _season_now(),
         "天气": _weather_now() or "（无天气数据，按季节推荐）",
         "口味偏好": req.taste or None,
@@ -685,6 +702,7 @@ def api_daily(req: DailyRequest):
         "count": max(1, min(req.count, 6)),
     }
     plan = daily_plan(context)
+    plan["日期"] = today           # 用北京时间覆盖模型输出，避免模型给错日期
     plan["季节"] = context["季节"]
     plan.setdefault("天气", context["天气"])
     plan["节日"] = req.festival or ""
